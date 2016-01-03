@@ -1,4 +1,7 @@
-[all]
+[all:children]
+node
+
+[node]
 node1
 node2
 node3

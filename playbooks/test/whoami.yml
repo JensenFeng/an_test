@@ -1,0 +1,13 @@
+---
+- name: show return value of command
+  hosts: node1
+  tasks:
+    - name: capture output of id command
+      command: id -un
+      register: login
+    - debug: var=login
+    
+    - name: capture output of id command
+      command: id -un
+      register: login
+    - debug: msg="Logged in as user {{ login.stdout }}"
