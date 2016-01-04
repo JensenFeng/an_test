@@ -1,0 +1,12 @@
+---
+- name: update apt-cache
+  hosts: all
+  tasks: name=apt update_cache=yes cache_valid_time=36000  
+  tags:
+    - apt_cache_update
+
+- name: Install ntp server
+  hosts: all
+  roles:
+    - ntp_servers 
+

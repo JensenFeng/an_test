@@ -1,3 +1,4 @@
 ---
 
-ntp_servers: {{ ntp_servers }}
+#ntp_servers: "{{ ntp_servers }}"
+ntp_servers: ["10.166.224.28"]
