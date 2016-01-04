@@ -1,6 +1,9 @@
 ---
 - name: Install ntp server
-  apt: name=ntp 
+  apt: name={{ item }}
+  with_items:
+    - ntp
+    - ntpdate
   
 - name: copy the ntp.conf template file
   template: src=ntp.conf.j2 dest=/etc/ntp.conf

@@ -1,0 +1,9 @@
+---
+
+#- hosts: all
+#  roles:
+#   - role: ntp_servers 
+#     ntp_servers: [ deployhost ]
+- hosts: db
+  roles:
+    - mysql

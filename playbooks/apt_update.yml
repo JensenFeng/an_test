@@ -5,8 +5,3 @@
   tags:
     - apt_cache_update
 
-- name: Install ntp server
-  hosts: all
-  roles:
-    - ntp_servers 
-

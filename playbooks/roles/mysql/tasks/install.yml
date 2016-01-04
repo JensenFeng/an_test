@@ -1,0 +1,25 @@
+---
+- name: Install mysql packages
+  apt: 
+    pkg: "{{ item }}"
+  with_items: 
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+
+- name: Ensure mysql is running 
+  service:
+    name: mysql
+    state: started
+
+
+- name: update the my.cnf
+  template:
+    src: mysql_my.cnf.j2
+    dest: /etc/mysql/my.cnf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart mysql
+
