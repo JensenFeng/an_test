@@ -1,0 +1,8 @@
+---
+
+rabbitmq_os_package: false
+
+##
+rabbitmq_users_definitions:
+  - name: test
+  - password: t@est
