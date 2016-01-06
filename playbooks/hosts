@@ -9,3 +9,6 @@ node3
 
 [db]
 node1
+
+[rabbitmq]
+node1

@@ -1,0 +1,11 @@
+---
+
+- name: "Ensure RabbitMQ node is started"
+  service:
+    name: rabbitmq-server
+    state: started
+  failed_when: false
+  tags:
+    - rabbitmq-server-started
+    - rabbitmq-upgrade
+    - rabbitmq-start

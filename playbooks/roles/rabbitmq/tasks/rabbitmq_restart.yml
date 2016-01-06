@@ -1,0 +1,4 @@
+---
+
+- include: rabbitmq_stopped.yml
+- include: rabbitmq_started.yml

@@ -1,0 +1,107 @@
+---
+
+# Create an service tenant
+- name: Ensure service tenant
+  keystone:
+    command: "ensure_tenant"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport}}/v2.0"
+    tenant_name: "{{ item }}"
+  register: add_service
+  until: add_service|success
+  with_items:
+    - admin
+    - service
+    - demo
+  tags:
+    - keystone-api-setup
+    - keystone-setup
+
+# Create an admin user
+- name: Ensure Admin user
+  keystone:
+    command: "ensure_user"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
+    user_name: "{{ item.user }}"
+    tenant_name: "{{ item.tenant_name }}"
+    password: "{{ item.password}}"
+  register: add_service
+  until: add_service|success
+  with_items:
+    keystone_users
+  tags:
+    - keystone-api-setup
+    - keystone-setup
+
+# Create an admin role
+- name: Ensure Admin role
+  keystone:
+    command: "ensure_role"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
+    role_name: "{{ item }}"
+  register: add_service
+  until: add_service|success
+  with_items:
+    - admin
+    - Member
+  tags:
+    - keystone-api-setup
+    - keystone-setup
+
+# Add a role to the user
+- name: Ensure Admin user to Admin role
+  keystone:
+    command: "ensure_user_role"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
+    user_name: "{{ item.user }}"
+    tenant_name: "{{ item.tenant_name }}"
+    role_name: "admin"
+  register: add_service
+  until: add_service|success
+  with_items:
+    keystone_users
+  tags:
+    - keystone-api-setup
+    - keystone-setup
+
+# Create a service
+- name: Ensure Keystone Service
+  keystone:
+    command: "ensure_service"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
+    service_name: "{{ item.service_name }}"
+    service_type: "{{ item.service_type }}"
+    description: "{{ item.description }}"
+  register: add_service
+  until: add_service|success
+  with_items:
+    keystone_services
+  tags:
+    - keystone-api-setup
+    - keystone-service-add
+    - keystone-setup
+
+# Create an endpoint
+- name: Ensure Keystone Endpoint
+  keystone:
+    command: "ensure_endpoint"
+    token: "{{ keystone_auth_admin_token }}"
+    endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
+    region_name: "{{ keystone_service_region }}"
+    service_name: "{{ item.service_name }}"
+    service_type: "{{ item.service_type }}"
+    publicurl: "{{ item.public_url }}"
+    adminurl: "{{ item.admin_url }}"
+    internalurl: "{{ item.internal_url }}"
+  register: add_service
+  until: add_service|success
+  with_items:
+    keystone_endpoints
+  tags:
+    - keystone-api-setup
+    - keystone-service-add
+    - keystone-setup

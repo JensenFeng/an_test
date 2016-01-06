@@ -13,10 +13,13 @@
 
 - name: install rabbitmq-server
   apt:
-    name: rabbitmq-server
+    pkg={{item}}
     update_cache=yes
+    state=latest
+  with_items: 
+    - rabbitmq-server
 
 - name: enable rabbitmq-server to survive reboot
   service: 
-    name: rabbitmq-server
+    name=rabbitmq-server
     enabled=yes

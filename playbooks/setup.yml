@@ -4,6 +4,9 @@
 #  roles:
 #   - role: ntp_servers 
 #     ntp_servers: [ deployhost ]
-- hosts: db
+# hosts: db
+# roles:
+#   - mysql
+- hosts: rabbitmq
   roles:
-    - mysql
+    - rabbitmq

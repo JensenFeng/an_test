@@ -6,5 +6,5 @@
     owner: rabbitmq
     group: rabbitmq
     mode: 0644
-    backup=yes
+    backup: yes
   notify: restart rabbitmq-server

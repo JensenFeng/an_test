@@ -1,0 +1,42 @@
+---
+- name: Get version of installed RabbitMQ package
+  shell: |
+    dpkg -l | grep rabbitmq-server
+  failed_when: false
+  register: installed_rabbitmq
+  when:
+    - not rabbitmq_upgrade | bool
+  tags:
+    - rabbitmq-package-deb
+    - rabbitmq-apt-packages
+
+- name: Compare installed version of RabbitMQ with new version variable
+  fail:
+    msg: "To install a new major/minor version of RabbitMQ set '-e rabbitmq_upgrade=true'."
+  when: >
+    not rabbitmq_upgrade | bool and
+    installed_rabbitmq.rc == 0 and
+    installed_rabbitmq.stdout.split()[2] != rabbitmq_package_version
+  tags:
+    - rabbitmq-package-deb
+    - rabbitmq-apt-packages
+
+- name: Prevent RabbitMQ from starting on install
+  copy:
+    src: "policy-rc.d"
+    dest: "/usr/sbin/policy-rc.d"
+    mode: "0755"
+    backup: yes
+  tags:
+    - rabbitmq-policy-file
+    - rabbitmq-upgrade
+
+- include: rabbitmq_stopped.yml
+
+- name: Ensure erlang epmd is stopped
+  shell: |
+    pkill $(pgrep -lf "erlang" | awk '{print $2}')
+  ignore_errors: true
+  tags:
+    - rabbitmq-upgrade
+

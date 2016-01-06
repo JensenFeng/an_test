@@ -1,0 +1,6 @@
+
+export OS_USERNAME={{ keystone_admin_user| default('admin') }}
+export OS_PASSWORD={{ keystone_admin_password| default('admin_pass') }}
+export OS_TENANT_NAME=admin
+export OS_AUTH_URL=http://{{ keystone.public_ip }}:{{ keystone.public_port }}/v2.0
+export OS_NO_CACHE=1

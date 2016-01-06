@@ -6,9 +6,8 @@
 
 - name: add rebbitmq user and set privileges
   rabbitmq_user:
-    user: {{item.user}
-    password: {{item.password}}
-    
+    user={{ item.user }}
+    password={{ item.password }}   
   with_items: rabbitmq_users_definitions
 
 - name: remove guest user (hostname)

@@ -1,0 +1,46 @@
+---
+
+- include: rabbitmq_upgrade_check.yml
+
+- name: Update apt sources
+  apt:
+    update_cache: yes
+    cache_valid_time: 600
+  register: apt_update
+  until: apt_update|success
+  tags:
+    - rabbitmq-apt-packages
+
+- name: Install apt packages
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  register: install_packages
+  until: install_packages|success
+  with_items: rabbitmq_apt_packages
+  tags:
+    - rabbitmq-apt-packages
+
+- name: Install the RabbitMQ package
+  apt:
+    deb: "{{ rabbitmq_package_path }}"
+  tags:
+    - rabbitmq-package-deb
+    - rabbitmq-apt-packages
+
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  register: install_packages
+  until: install_packages|success
+  with_items: rabbitmq_pip_packages
+
+- name: Ensure there are no policy-rc files
+  file:
+    path: "/usr/sbin/policy-rc.d"
+    state: absent
+  tags:
+    - rabbitmq-policy-file
+
+- include: rabbitmq_started.yml

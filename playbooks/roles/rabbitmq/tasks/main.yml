@@ -1,6 +1,7 @@
 ---
-- include: install.yml
 
-- include: configure.yml
+- include: rabbitmq_pre_install.yml
 
-- include: vhost.yml
+- include: rabbitmq_install.yml
+
+- include: rabbitmq_post_install.yml

@@ -1,0 +1,8 @@
+---
+- name: "Ensure RabbitMQ node is stopped"
+  service:
+    name: rabbitmq-server
+    state: stopped
+  failed_when: false
+  tags:
+    - rabbitmq-stop

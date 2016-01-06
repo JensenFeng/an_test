@@ -2,7 +2,18 @@
 
 rabbitmq_os_package: false
 
+rabbitmq_package_path: "/opt/rabbitmq-server.deb" 
+rabbitmq_package_url: "https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.6/rabbitmq-server_3.5.6-1_all.deb"
+rabbitmq_package_sha256: "e3c377e585c123e06c88422248915f32216641d6f7dfab50d124535c8e93010d"
+
+rabbitmq_apt_packages:
+   - erlang-nox
+rabbitmq_pip_packages:
+   - python-memcached
+   - pycrypto
+
 ##
 rabbitmq_users_definitions:
-  - name: test
-  - password: t@est
+  - name: openstack
+  - password: openstack
+rabbitmq_ulimit: 4096

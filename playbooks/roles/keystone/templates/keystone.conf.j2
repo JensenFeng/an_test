@@ -1,0 +1,104 @@
+[DEFAULT]
+admin_token = {{ keystone.admin_token }}
+bind_port = {{ keystone.bind_port }}
+public_port = {{ keystone.public_port }}
+admin_port = {{ keystone.admin_port }}
+debug = True
+verbose = True
+log_file = {{ keystone.log_file }}
+log_dir = {{ keystone.log_dir }}
+
+[sql]
+# The SQLAlchemy connection string used to connect to the database
+connection = mysql://{{ keystone.mysql_keystone_user }}:{{ keystone.mysql_keystone_password }}@{{ keystone.mysql_ip }}:{{ keystone.mysql_port }}/keystone
+
+# the timeout before idle sql connections are reaped
+idle_timeout = 200
+
+[identity]
+driver = keystone.identity.backends.sql.Identity
+
+[credential]
+# driver = keystone.credential.backends.sql.Credential
+
+[trust]
+# driver = keystone.trust.backends.sql.Trust
+
+# delegation and impersonation features can be optionally disabled
+# enabled = True
+
+[os_inherit]
+# role-assignment inheritance to projects from owning domain can be
+# optionally enabled
+# enabled = False
+
+[catalog]
+# dynamic, sql-based backend (supports API/CLI-based management commands)
+driver = keystone.catalog.backends.sql.Catalog
+[endpoint_filter]
+# extension for creating associations between project and endpoints in order to
+# provide a tailored catalog for project-scoped token requests.
+# driver = keystone.contrib.endpoint_filter.backends.sql.EndpointFilter
+# return_all_endpoints_if_no_filter = True
+
+[token]
+# Provides token persistence.
+# driver = keystone.token.backends.sql.Token
+driver=keystone.token.backends.memcache.Token
+
+
+[memcache]
+servers = {{ babel_keystone.memcache_server }}:{{ babel_keystone.memcache_port }}
+[cache]
+# Global cache functionality toggle.
+# enabled = False
+
+[policy]
+driver = keystone.policy.backends.sql.Policy
+
+[ec2]
+driver = keystone.contrib.ec2.backends.kvs.Ec2
+
+[assignment]
+# driver =
+
+# Assignment specific caching toggle. This has no effect unless the global
+# caching option is set to True
+# caching = True
+
+# Assignment specific cache time-to-live (TTL) in seconds.
+# cache_time =
+
+[oauth1]
+
+
+
+[ssl]
+#enable = True
+#certfile = /etc/keystone/pki/certs/ssl_cert.pem
+#keyfile = /etc/keystone/pki/private/ssl_key.pem
+#ca_certs = /etc/keystone/pki/certs/cacert.pem
+#ca_key = /etc/keystone/pki/private/cakey.pem
+#key_size = 1024
+#valid_days = 3650
+#cert_required = False
+#cert_subject = /C=US/ST=Unset/L=Unset/O=Unset/CN=localhost
+
+[signing]
+# Deprecated in favor of provider in the [token] section
+# Allowed values are PKI or UUID
+token_format = UUID
+
+[ldap]
+
+[auth]
+methods = external,password,token,oauth1
+#external = keystone.auth.plugins.external.ExternalDefault
+password = keystone.auth.plugins.password.Password
+token = keystone.auth.plugins.token.Token
+oauth1 = keystone.auth.plugins.oauth1.OAuth
+
+[paste_deploy]
+# Name of the paste configuration file that defines the available pipelines
+config_file = keystone-paste.ini
+
