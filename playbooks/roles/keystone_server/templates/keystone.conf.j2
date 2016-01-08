@@ -48,7 +48,7 @@ driver=keystone.token.backends.memcache.Token
 
 
 [memcache]
-servers = {{ babel_keystone.memcache_server }}:{{ babel_keystone.memcache_port }}
+servers = {{ keystone.memcache_server }}:{{ keystone.memcache_port }}
 [cache]
 # Global cache functionality toggle.
 # enabled = False

@@ -1,0 +1,6 @@
+---
+
+ntp_servers: "10.166.224.28"
+mysql_root_password: 'CHANGEME'
+#mysql_address: "10.166.224.30"
+mysql_address: 10.166.224.30

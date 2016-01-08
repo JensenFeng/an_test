@@ -1,5 +1,4 @@
 ---
 
 - include: install.yml
-- include: secure.yml
-- include: database.yml
+- include: post_install.yml

@@ -1,0 +1,18 @@
+---
+- name: set sources
+  copy: >
+       src=files/sources.list 
+       dest=/etc/apt/sources.list
+
+- name: update
+  apt: update_cache=yes
+- name: dist-upgrade
+  command: "apt-get -y dist-upgrade"
+  
+- name: Install resource
+  apt: name={{ item }} 
+  with_items: 
+    - python-dev
+    - bridge-utils
+    - git
+    - vim

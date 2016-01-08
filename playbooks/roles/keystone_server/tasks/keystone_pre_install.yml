@@ -16,7 +16,8 @@
     shell: "{{ keystone_system_shell }}"
     system: "yes"
     createhome: "yes"
-    home: "{{ keystone_system_user_home }}"                                       tags:
+    home: "{{ keystone_system_user_home }}"
+  tags:
     - keystone-user
 
 - name: Create keystone dir

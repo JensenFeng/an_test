@@ -1,12 +1,12 @@
 ---
 
-#- hosts: all
-#  roles:
+# hosts: all
+# roles:
 #   - role: ntp_servers 
 #     ntp_servers: [ deployhost ]
-# hosts: db
-# roles:
-#   - mysql
-- hosts: rabbitmq
+
+- hosts: keystone_server
   roles:
+    - mysql
     - rabbitmq
+    - role: keystone_server

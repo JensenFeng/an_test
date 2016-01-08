@@ -40,10 +40,13 @@ mysql_ft_min_word_len: 4
 mysql_databases: [keystone, nova, glance, neutron, cinder]
 
 # List of users to be created
-mysql_users: 
+#mysql_users:  []
+mysql_users:  
     - name: keystone 
-      pass: keystone
-    - name: nova 
-    - name: glance
-    - name: cinder
-    - name: neutron 
+      pass: keystone_pass
+      priv: keystone.*:ALL
+      host: 'localhost'
+#   - name: nova 
+#   - name: glance
+#   - name: cinder
+#   - name: neutron 

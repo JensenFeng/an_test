@@ -1,7 +1,0 @@
----
-
-- name: Restart keystone
-  service:
-    name: "keystone"
-    state: "restarted"
-    pattern: "keystone"

@@ -4,13 +4,12 @@
     pkg: "{{ item }}"
   with_items: 
     - mysql-server
-    - mysql-client
     - python-mysqldb
 
-- name: Ensure mysql is running 
+- name: Ensure mysql is stopped
   service:
     name: mysql
-    state: started
+    state: stopped
 
 
 - name: update the my.cnf
@@ -20,6 +19,52 @@
     owner: root
     group: root
     mode: 0644
-  notify:
-    - restart mysql
 
+- name: ensure mysql is started and running
+  service:
+    name: mysql
+    state: restarted
+    pattern: mysqld
+    enabled: yes
+
+- name: update mysql root password for all accounts
+  mysql_user:
+    name: root
+    host: "localhost"
+    password: "{{ mysql_root_password }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+
+- name: copy .my.cnf file with root password credentials
+  template:
+    src: "root_dot_my.cnf.j2"
+    dest: "/root/.my.cnf"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: reconfigure the root account for remote use
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql_root_password }}"
+    priv: "*.*:ALL, GRANT"
+    state: present
+  with_items:
+    - "localhost"
+    - "127.0.0.1"
+    - "::1"
+    - "%"
+
+- name: ensure anonymous users are not in the database
+  mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+  with_items:
+    - "localhost"
+    - "127.0.0.1"
+    - "::1"
+    - "%" 

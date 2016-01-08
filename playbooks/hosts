@@ -12,3 +12,6 @@ node1
 
 [rabbitmq]
 node1
+
+[keystone_server]
+node1
