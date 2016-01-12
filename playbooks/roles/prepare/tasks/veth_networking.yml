@@ -1,0 +1,39 @@
+---
+
+- name: Ensure that /etc/network/interfaces.d/ exists
+  file:
+    path: /etc/network/interfaces.d/
+    state: directory
+  tags:
+    - networking-dir-create
+
+- name: Copy network configuration
+  template:
+    src: veth_interfaces.cfg.j2
+    dest: /etc/network/interfaces.d/veth_interfaces.cfg
+  register: veth_interfaces
+  tags:
+    - networking-interfaces-file
+
+- name: Ensure our interfaces.d configuration files are loaded automatically
+  lineinfile:
+    dest: /etc/network/interfaces
+    line: "source /etc/network/interfaces.d/*.cfg"
+  tags:
+    - networking-interfaces-load
+
+- name: Shut down the network interfaces
+  command: "ifdown {{ item }}"
+  when: veth_interfaces | changed
+  with_items:
+    - br0
+  tags:
+    - networking-interfaces-stop
+
+- name: Start the network interfaces
+  command: "ifup {{ item }}"
+  when: veth_interfaces | changed
+  with_items:
+    - br0
+  tags:
+    - networking-interfaces-start
