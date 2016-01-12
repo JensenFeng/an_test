@@ -24,4 +24,4 @@
 - name: Sync keystone db
   command: keystone-manage db_sync
   sudo: yes
-  tags: keystone-config
+  tags: keystone-db-sync

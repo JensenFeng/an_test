@@ -1,6 +1,313 @@
 ---
+# Copyright 2015, CityCloud CN, Inc.
+#
+# Author:mhjlq1989@gmail.com
 
+# All the global var here
 ntp_servers: "10.166.224.28"
 mysql_root_password: 'CHANGEME'
 #mysql_address: "10.166.224.30"
 mysql_address: 10.166.224.30
+babel_mysql_root_password: 'CHANGEME'
+
+babel_mysql_keystone_user: keystone
+babel_mysql_glance_user: glance
+babel_mysql_nova_user: nova
+babel_mysql_cinder_user: cinder
+babel_mysql_neutron_user: neutron
+babel_mysql_umbrella_user: umbrella
+babel_mysql_nbs_user: nbs
+
+babel_keystone_admin_token: "keystone_pass"
+babel_keystone_admin_user: "admin"
+babel_glance_admin_user: "{{ babel_mysql_glance_user }}"
+babel_nova_admin_user: "{{ babel_mysql_nova_user }}"
+babel_neutron_admin_user: "{{ babel_mysql_neutron_user }}"
+babel_cinder_admin_user: "{{ babel_mysql_cinder_user }}"
+
+babel_keystone_service_ip: "127.0.0.1"
+babel_glance_service_ip: "127.0.0.1"
+babel_nova_service_ip: "127.0.0.1"
+babel_neutron_service_ip: "127.0.0.1"
+babel_cinder_service_ip: "127.0.0.1"
+babel_mysql_service_ip: "127.0.0.1"
+babel_memcached_service_ip: "127.0.0.1"
+babel_rabbitmq_service_ip: "127.0.0.1"
+
+babel_auth_file: /root/.novarc
+
+babel_nfs_server: "10.10.82.121"
+
+babel_public_network_name: "public_admin"
+babel_public_network_cidr: "10.10.245.0/24"
+babel_public_network_gateway_ip: "10.10.245.253"
+babel_public_service_cidr: "192.168.2.0/24"
+babel_private_network_cidr: "192.168.138.0/24"
+babel_private_tunnel_cidr: "192.168.1.0/24"
+babel_vpn_client_ip_pool: "192.168.114.0/23"
+babel_vpn_domain_suffix: ".test.vpn.cloud.netease.com"
+
+aggregates_list:
+  - {'az': 'az1', 'name': 'az1', 'hosts_name': ['shary001']}
+  - {'az': 'az2', 'name': 'az2', 'hosts_name': ['shary002']}
+
+
+config_mysql:
+  bind_host: "127.0.0.1"
+  bind_port: 3306
+
+config_memcached:
+  bind_host: "127.0.0.1"
+  bind_port: 11211
+
+config_rabbitmq:
+  bind_host: "127.0.0.1"
+  bind_port: 5672
+  rabbitmq_user: guest
+
+config_keystone:
+  admin_token: "{{ babel_keystone_admin_token }}"
+  bind_host: "127.0.0.1"
+  public_port: 5000
+  admin_port: 35357
+  internal_port: 5000
+  log_file: keystone.log
+  log_dir: /data/log/keystone/
+  public_ip: "{{ babel_keystone_service_ip }}"
+  admin_ip: "{{ babel_keystone_service_ip }}"
+  internal_ip: "{{ babel_keystone_service_ip }}"
+  region_name: RegionOne
+
+config_glance:
+  bind_api_host: "{{ babel_glance_service_ip }}"
+  bind_registry_host: "{{ babel_glance_service_ip }}"
+  bind_api_port: 9292
+  bind_registry_port: 9191
+  log_file: "glance.log"
+  log_dir: "/data/log/glance/"
+  data_dir: "/data/glance/"
+  nfs_image_path: "/home/share/images"
+  images:
+    - name: "debian-7.2-amd64"
+      image_file: debian-7.2.0-amd64-nbs.qcow2
+      container_format: bare
+      disk_format: qcow2
+      os_type: linux
+    - name: "ubuntu-12.04.4-server-amd64"
+      image_file: ubuntu-12.04.4-server-amd64.qcow2
+      container_format: bare
+      disk_format: qcow2
+      os_type: linux
+
+config_nova:
+# osapi_compute_listen: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# osapi_compute_listen_port: 8774
+# metadata_listen: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# metadata_listen_port: 8775
+# novncproxy_host: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# log_dir: /data/log/nova
+# state_path: /data/nova
+# lock_path: /data/lock/nova
+# host_ip_ifname: eth0
+# my_ip: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# pf_conf_host: "{{ babel_cloud_pf_service_ip }}"
+
+config_neutron:
+# bind_host: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# bind_port: 9696
+# log_dir: /data/log/neutron
+# state_path: /var/lib/neutron
+# bridge_mappings: "public:br-wan"
+# acl_whitelist: "10.10.245.1/24,8.8.8.8/24"
+# svlan_phy_dev_pattern: "vlan%s"
+# dnsmasq_dns_servers: "114.114.114.114, 8.8.8.8"
+# tunnel_vxlan_mtu: "1400"
+# tunnel_gre_mtu: "1400"
+# svlan_route: "10.10.245.1/24,8.8.8.8/24"
+
+config_cinder:
+# osapi_volume_listen: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# osapi_volume_listen_port: 8776
+# log_dir: /data/log/cinder
+# state_path: /data/cinder
+# lock_path: /data/cinder/lock
+# my_ip: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+
+#onfig_umbrella:
+# bind_host: "{{ babel_umbrella_service_ip }}"
+# bind_port: 9800
+# log_dir: "/data/log/umbrella"
+# log_file: "umbrella-api.log"
+
+config_nbs:
+# nbs_api_server:  "{{ babel_nbs_service_ip }}"
+# nbs_api_server_port: 8081
+# nfs_package_path: "/home/share/nbs"
+# install_path: "/home/nbs"
+# package_name: "nbs.tar.gz"
+# log_nbs_dir: "/data/log/nbs"
+# log_billing_dir: "/data/log/billing/nbs"
+# agent_bfs_root_path: "/data/nbs/bfs"
+# agent_rpc_subnet: "{{ babel_public_service_cidr }}"
+# agent_target_subnet: "{{ babel_public_service_cidr }}"
+# nbs_device_name: 
+# - /dev/sdc
+# - /dev/sdd
+# - /dev/sde
+# - /dev/sdf
+
+config_ddb:
+# bind_host: "{{ babel_ddb_service_ip }}"
+# bind_port: 8888
+# admin_port: 9999
+# query_port: 6001
+# ddb_user: sys
+# ddb_pass: netease
+# ddb_name: ddb_iaas
+# qs_user: qs
+# install_path: "/home/ddb"
+# nfs_package_path: "/home/share/ddb"
+# package_name: "ddb.tar.gz"
+
+#onfig_cloud_pf:
+# region_name: "CCI"
+# region_id: 1
+# region_info: 下沙机房
+# install_path: "/home/cloud"
+# smtp_server: smtp.mxhichina.com
+# smtp_email_account: rdnotifier@citycloud.com.cn
+# smtp_email_password: P@ssw0rd
+# stmp_email_displayname: CloudAdmin
+# nfs_package_path: "/home/share/cloud-pf"
+# packages: 
+#   tomcat_cloud_pf: "tomcat_cloud_pf.tar.gz"
+#   webroot_cloud_pf: "webroot_cloud_pf.tar.gz"
+#   tomcat_cloud_pf_admin: "tomcat_cloud_pf_admin.tar.gz"
+#   webroot_cloud_pf_admin: "webroot_cloud_pf_admin.tar.gz"
+#   tomcat_pf_auth: "tomcat_pf_auth.tar.gz"
+#   webroot_pf_auth: "webroot_pf_auth.tar.gz"
+#   tomcat_pf_conf: "tomcat_pf_conf.tar.gz"
+#   webroot_pf_conf: "webroot_pf_conf.tar.gz"
+# pf_settings:
+#   bind_host: "{{ babel_cloud_pf_service_ip }}"
+#   server_port: 8110
+#   http_connector_port: 8181
+#   http_redirect_port: 8443
+#   ajp_connector_port: 8019
+#   ajp_redirect_port: 80
+#   domain: "{{ babel_cloud_pf_service_ip }}"
+# conf_settings:
+#   bind_host: "{{ babel_cloud_pf_service_ip }}"
+#   server_port: 8114
+#   http_connector_port: 8190
+#   http_redirect_port: 8443
+#   ajp_connector_port: 8014
+#   ajp_redirect_port: 8443
+# auth_settings:
+#   bind_host: "{{ babel_cloud_pf_service_ip }}"
+#   server_port: 8018
+#   http_connector_port: 8182
+#   http_redirect_port: 8443
+#   ajp_connector_port: 8011
+#   ajp_redirect_port: 8443
+# admin_settings:
+#   bind_host: "{{ babel_cloud_pf_service_ip }}"
+#   server_port: 8008
+#   http_connector_port: 8183
+#   http_redirect_port: 8443
+#   ajp_connector_port: 8012
+#   ajp_redirect_port: 80
+#   domain: "admin.cloud_iaas.citycloud.com.cn"
+
+#onfig_cm:
+# monitor_webserver_host: "{{ babel_cm_service_ip }}"
+# monitor_webserver_port: 8186
+# nfs_package_path: "/home/share/cloud-monitor"
+# xmppServerAddress: "{{ babel_cm_service_ip }}"
+# xmppServerPort: 5222
+# xmppProxyPort: 7776
+# #todo:  alart_server should be deployed with email and phone server
+# alarm_server_host: "{{ babel_cm_service_ip }}"
+# alarm_server_port: 8080
+
+#onfig_ddb_nos:
+# bind_host: "{{ babel_ddb_nos_service_ip }}"
+# bind_port: 8877
+# admin_port: 9988
+# query_port: 6022
+# dbn: nosdbn
+# ddb_user: sys
+# ddb_pass: netease
+# ddb_name: ddb_nos
+# qs_user: qs
+# install_path: "/home/ddb_nos"
+# nfs_package_path: "/home/share/ddb"
+# package_name: "ddb.tar.gz"
+
+#onfig_nos:
+# install_path: "/home/nos"
+# nfs_package_path: "/home/share/nos"
+# data_dir: "/home/nos"
+# data_dir_fs: "ext4"
+# packages: 
+#   zookeeper: "zookeeper.tar.gz"
+#   tomcat_nos: "tomcat_nos.tar.gz"
+#   webroot_nos: "webroot_nos.tar.gz"
+#   mds: "mds.tar.gz"
+#   sn: "sn.tar.gz"
+#   sdfs_admin: "sdfs_admin.tar.gz"
+# zookeeper_settings:
+#   bind_host: "{{ babel_nos_service_ip }}"
+#   client_port: 2181
+# mds_settings:
+#   bind_host: "{{ babel_nos_service_ip }}"
+#   client_port: 5555
+#   sn_port: 5566
+#   admin_port: 53163
+#   meta_db: nosmds
+#   proxy_db: nos_proxy
+# proxy_settings:
+#   bind_host: "{{ babel_nos_service_ip }}"
+#   server_port: 9112
+#   http_connector_port: 9183
+#   http_redirect_port: 8446
+#   ajp_connector_port: 9012
+#   ajp_redirect_port: 8446
+# sn_settings:
+#   bind_host: "{{ babel_nos_service_ip }}"
+#   sn0_port: 5500
+#   sn1_port: 5501
+#   sn2_port: 5502
+
+#onfig_consul:
+# datacenter: "CCI"
+# data_dir: /var/consul
+# conf_dir: /etc/consul
+# dns_port: 8600
+# http_port: 8500
+# rpc_port: 8400
+# serf_lan_port: 8301
+# serf_wan_port: 8302
+# server_port: 8300
+
+# todo add nos-service startup options
+#abel_addon_startup_service:
+# ddb_service:
+#   - { name: "ddb-master", start_level: 100, stop_level: 100 }
+#   - { name: "ddb-qs", start_level: 101, stop_level: 99 }
+# cloud_pf_service:
+#   - { name: "tomcat_pf_auth", start_level: 102, stop_level: 98 }
+#   - { name: "tomcat_pf_conf", start_level: 103, stop_level: 97 }
+#   - { name: "tomcat_cloud_pf", start_level: 104, stop_level: 96 }
+#   - { name: "tomcat_cloud_pf_admin", start_level: 105, stop_level: 95 }
+# cm_service:
+#   - { name: "openfire", start_level: 106, stop_level: 94 }
+#   - { name: "redis", start_level: 107, stop_level: 93 }
+#   - { name: "cm_registerserver", start_level: 108, stop_level: 92 }
+#   - { name: "cm_webserver", start_level: 109, stop_level: 91 }
+#   - { name: "cm_monitorserver", start_level: 110, stop_level: 90 }
+#   - { name: "cm_taskserver", start_level: 111, stop_level: 89 }
+#   - { name: "cm_alertserver", start_level: 112, stop_level: 88 }
+# nbs_service:
+#   - { name: "NBSManager", start_level: 113, stop_level: 87 }
+#   - { name: "NBSAgent", start_level: 114, stop_level: 86 }

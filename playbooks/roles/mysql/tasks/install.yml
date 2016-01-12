@@ -3,7 +3,7 @@
   apt: 
     pkg: "{{ item }}"
   with_items: 
-    - mysql-server
+    - mariadb-server
     - python-mysqldb
 
 - name: Ensure mysql is stopped

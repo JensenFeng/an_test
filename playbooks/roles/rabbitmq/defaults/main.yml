@@ -17,3 +17,6 @@ rabbitmq_users_definitions:
   - name: openstack
   - password: openstack
 rabbitmq_ulimit: 4096
+rabbitmq_plugins:
+  - names: rabbitmq_management
+    state: enabled
