@@ -19,6 +19,8 @@ nova_service_ip: 127.0.0.1
 neutron_service_ip: 127.0.0.1
 cinder_service_ip: 127.0.0.1
 ##
+keystone_admin_user: "admin"
+keystone_admin_token: "admin_pass"
 keystone_auth_admin_token: "{{ keystone_mysql_pass }}"
 keystone_service_adminurl: "127.0.0.1"
 keystone_service_adminport: "35357"
@@ -32,7 +34,7 @@ keystone:
      - memcached 
      - python-memcache
      - apache2
-#    - apache2-utils
+     - apache2-utils
 #    - debhelper
 #    - dh-apparmor
 #    - docutils-common
@@ -45,9 +47,10 @@ keystone:
 #    - rsync 
 #    - libapache2-mod-wsgi
 #    - python-lxml
+
    keystone_pip_packages:
 #    - keystone
-#    - keystonemiddleware
+     - keystonemiddleware
 #    - ldappool
      - PyMySQL
 #    - oslo.middleware
@@ -70,7 +73,7 @@ keystone:
    admin_ip: 127.0.0.1
    admin_port: 35357
    admin_token: "{{ keystone_auth_admin_token }}"
-   bind_port: 0.0.0.0
+   bind_port: 127.0.0.1
    glance_bind_port: 9292    
    nova_osapi_compute_listen_port: 8774 
    neutron_bind_port: 9696

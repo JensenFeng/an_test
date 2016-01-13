@@ -1,0 +1,242 @@
+#!/usr/bin/python
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+DOCUMENTATION = """
+---
+module: nova
+short_description:
+   - Basic module for interacting with openstack nova
+description:
+   - Basic module for interacting with openstack nova
+options:
+    command:
+        description:
+            - Operation for the module to perform. Currently available
+        choices:
+            - create_aggregates
+            - set_aggregates
+            - add_host_aggregates
+            - get_aggregates_detail
+        required: True
+    user_name:
+        description:
+            - The name of the user that has to added/removed from OpenStack
+        required: True
+        default: None
+    password:
+        description:
+            - The password to be assigned to the user
+        required: True
+        default: None
+    tenant_name:
+        description:
+            - The tenant name that has be added/removed
+        required: True
+        default: None
+    auth_url:
+        description:
+            - Public URL.
+        required: True
+        default: None
+    aggregate_id:
+        description:
+            - aggregate_id on your desire
+        required: false
+        default: None
+    aggregate_name:
+        description:
+            - aggregate_name on your desire
+        required: false
+        default: None
+    host_name:
+        description:
+            - a compute node hostname
+        required: false
+        default: None
+    meta_data:
+        description:
+            - meta_data of a aggregate
+        required: false
+        default: None
+requirements: [python-novaclient]
+author: Haojing Ma
+"""
+
+EXAMPLES = """
+# add the host to specified aggregate
+- nova:
+    command: "aggregate_add_host"
+    user_name: "admin"
+    password: "admin_pass"
+    tenant_name: "admin"
+    auth_url: "http://10.10.82.19:5000/v2"
+    aggregate_name: "az_one"
+    host_name: "controller"
+"""
+
+COMMAND_MAP = {
+    'aggregate_add_host': {
+        'variables': [
+            'user_name',
+            'password',
+            'tenant_name',
+            'auth_url',
+            'aggregate_name',
+            'host_name'
+        ]
+    }
+}
+
+try:
+    from novaclient.v1_1 import client
+except ImportError:
+    novaclient_found = False
+else:
+    novaclient_found = True
+
+class ManagerNova(object):
+
+    def __init__(self, module):
+        """Manage Nova via Ansible."""
+        self.state_change = False
+        self.nova = None
+
+        self.module = module
+
+    def _get_client(self):
+        pass
+
+    @staticmethod
+    def _fact(facts):
+        return {'nova_facts': facts}
+
+    def command_router(self):
+        """Run the command as its provided to the module."""
+        command_name = self.module.params['command']
+        if command_name not in COMMAND_MAP:
+            sefl.failure(
+                error='No Command Found',
+                rc=2,
+                msg='Command [ %s ] was not found.' % command_name
+            )
+        action_command = COMMAND_MAP[command_name]
+        if hasattr(self, '%s' % command_name):
+            action = getattr(self, '%s' % command_name)
+            facts = action(variables=action_command['variables'])
+            if facts is None:
+                self.module.exit_json(changed=self.state_change)
+            else:
+                self.module.exit_json(
+                    changed=self.state_change,
+                    ansible_facts=facts
+                )
+        else:
+            self.failure(
+                error='Command not in ManageKeystone class',
+                rc=2,
+                msg='Method [ %s ] was not found.' % command_name
+            )
+
+    def _get_vars(self, variables):
+        """
+
+        """
+        res_vars = {}
+        for variable in variables:
+            res_vars[variable] = self.module.params.get(variable)
+        return res_vars
+
+    def _authenticate(self, variables):
+        """ authenticate the user for OpenStack
+        :param variables: ```list``` List of all variables that are
+            available to use within the nova command
+        """
+        username = variables.pop('user_name')
+        api_key = variables.pop('password')
+        project_id = variables.pop('tenant_name')
+        auth_url = variables.pop('auth_url')
+
+        self.nova = client.Client(auth_url=auth_url, username=username, api_key=api_key, project_id=project_id)
+
+    def _aggregate_add_host(self, aggregate, host_name):
+        """
+            aggregate from 
+        """
+        try:
+            self.nova.aggregates.add_host(aggregate, host_name)
+        except Exception, e:
+            print e
+
+    def aggregate_add_host(self, variables):
+        """
+
+        """
+        res = []
+        variables_dict = self._get_vars(variables)
+        self._authenticate(variables_dict)
+
+        aggregate_name = variables_dict.pop('aggregate_name')
+        host_name = variables_dict.pop('host_name')
+        
+        aggs = self._aggregate_list()
+        param_aggregate = None
+        for agg in aggs:
+            if aggregate_name == agg.name:
+                param_aggregate = agg
+
+        self._aggregate_add_host(param_aggregate, host_name)
+
+        aggs = self._aggregate_list()
+        for agg in aggs:
+            res.append({'id':agg.id, 'name':agg.name, 'availability_zone':agg.availability_zone, 'hosts':agg.hosts})
+
+        return self._fact(res)
+
+    def _aggregate_list(self):
+        return self.nova.aggregates.list()
+
+    def _aggregate_by_id(self, aggregate_id):
+        return self.nova.aggregates.get(aggregate_id)
+
+    def failure(self, error, rc, msg):
+        """Return a Failure when running an Ansible command.
+
+        :param error: ``str``  Error that occurred.
+        :param rc: ``int``     Return code while executing an Ansible command.
+        :param msg: ``str``    Message to report.
+        """
+        self.module.fail_json(msg=msg, rc=rc, err=error)
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            command=dict(required=True,choices=COMMAND_MAP.keys()),
+            user_name=dict(required=True),
+            password=dict(required=True),
+            tenant_name=dict(required=True),
+            auth_url=dict(required=True),
+            aggregate_id=dict(required=False),
+            aggregate_name=dict(required=False),
+            host_name=dict(required=False),
+            meta_data=dict(required=False)
+        )
+    )
+    nm = ManagerNova(module=module)
+    if not novaclient_found:
+        nm.failure(
+            error='python-novaclient is missing',
+            rc=2,
+            msg='nova client was not importable, is it installed?'
+        )
+
+    return_code = module.params.get('return_code', '').split(',')
+    module.params['return_code'] = return_code
+    nm.command_router()
+
+
+# import module snippets
+from ansible.module_utils.basic import *
+if __name__ == '__main__':
+    main()

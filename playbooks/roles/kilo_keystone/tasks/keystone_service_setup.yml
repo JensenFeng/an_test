@@ -2,11 +2,12 @@
 
 # Create an service tenant
 - name: Ensure service tenant
-  keystone:
-    command: "ensure_tenant"
+  keystone_user:
+#   command: "ensure_tenant"
     token: "{{ keystone_auth_admin_token }}"
     endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport}}/v2.0"
-    tenant_name: "{{ item }}"
+#   tenant_name: "{{ item }}"
+    tenant: "{{ item }}"
   register: add_service
   until: add_service|success
   with_items:
@@ -21,9 +22,9 @@
 - name: Ensure Admin user
   keystone:
     command: "ensure_user"
+    user_name: "{{ item.user }}"
     token: "{{ keystone_auth_admin_token }}"
     endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
-    user_name: "{{ item.user }}"
     tenant_name: "{{ item.tenant_name }}"
     password: "{{ item.password}}"
   register: add_service
@@ -38,9 +39,9 @@
 - name: Ensure Admin role
   keystone:
     command: "ensure_role"
+    role_name: "{{ item }}"
     token: "{{ keystone_auth_admin_token }}"
     endpoint: "http://{{ keystone_service_adminurl }}:{{ keystone_service_adminport }}/v2.0"
-    role_name: "{{ item }}"
   register: add_service
   until: add_service|success
   with_items:

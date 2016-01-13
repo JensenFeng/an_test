@@ -4,16 +4,38 @@
      dest: "/etc/apache2/apache2.conf"
      line: "ServerName {{ inventory_hostname }}"
 
-- name: Create wsgi-keystone conf
+- name: Ensure apache2 directory enabled
   file:
+     path: "{{ item }}"
+     state: directory
+     owner: root
+     group: root
+  with_items:
+     - "/etc/apache2/sites-available"
+     - "/etc/apache2/sites-enabled"
+  register: site_enabled
+
+- name: Create wsgi-keystone conf
+  copy:
      src: "wsgi-keystone.conf"
-     dest: " /etc/apache2/sites-available/wsgi-keystone.conf"
+     dest: "/etc/apache2/sites-available/wsgi-keystone.conf"  
+     owner: root
+     group: root
+     mode: 0755
+  when: site_enabled|success
 
 - name: Enable keystone vhost
-  shell: "ln -s /etc/apache2/sites-available/wsgi-keystone.conf /etc/apache2/ sites-enabled"
-
+# shell: "ln -s /etc/apache2/sites-available/wsgi-keystone.conf /etc/apache2/sites-enabled"
+  file:
+    src: "/etc/apache2/sites-available/wsgi-keystone.conf"
+    dest: "/etc/apache2/sites-enabled"
+    state: link
+  ignore_errors: true
 - name: Create directory for WSGI
-  shell: "mkdir -p /var/www/cgi-bin/keystone"
+# shell: "mkdir -p /var/www/cgi-bin/keystone"
+  file:
+     path: "/var/www/cgi-bin/keystone"
+     state: directory
 
 - name: Copy WSGI
   shell: "{{ item }}" 
@@ -21,8 +43,13 @@
     - "curl http://git.openstack.org/cgit/openstack/keystone/plain/httpd/keystone.py?h=stable/kilo | tee /var/www/cgi-bin/keystone/main /var/www/cgi-bin/keystone/admin"
     - "chown -R keystone:keystone /var/www/cgi-bin/keystone"
     - "chmod 755 /var/www/cgi-bin/keystone/*"
-  notify:
-    - Restart Apache
+# notify:
+#   - Restart Apache
+- name: Ensure apache is running
+  service: 
+    name: "apache2"
+    state: "restarted"
+    pattern: "apache2"
 
 - name: Ensure keystone.db not Exist
   file:
