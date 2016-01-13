@@ -1,0 +1,12 @@
+---
+
+memcached_user: nobody
+memcached_spsize: 5000k
+memcached_listen: 0.0.0.0
+memcached_log: /var/log/memcached.log
+memcached_apt_packages:
+  - memcached
+
+memcached_port: "11211"
+base_memcached_memory: "4096"
+memcached_memory: "4096"

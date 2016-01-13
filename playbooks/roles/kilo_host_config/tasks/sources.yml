@@ -1,0 +1,47 @@
+---
+- name: set sources
+  copy: 
+       src: sources_ubuntu.list 
+       dest: /etc/apt/sources.list
+       mode: "0644"
+       owner: "root"
+       group: "root"
+
+- name: update
+  apt: update_cache=yes
+
+- name: ensure the /etc/apt/sources.list.d/ exists
+  file:
+      path: /etc/apt/sources.list.d/
+      state: directory
+
+- name: set openstack source
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  with_items:
+    - { src: cloudarchive-kilo.list, dest: /etc/apt/sources.list.d/cloudarchive-kilo.list }
+#   - { src: ubuntu_key.list, dest: /etc/apt/sources.list.d/ubuntu_key.list }
+    
+- name: update source
+  shell: "{{ item }}"
+  with_items:
+    - "apt-get update"
+    - "apt-get -y dist-upgrade"
+
+- name: Install ubuntu-key
+  apt:
+     pkg: "{{ item }}"
+     state: present
+  with_items: install_ubuntu_key
+
+
+- name: Install resource
+  apt: 
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  register: install_packages
+  until: install_packages|success
+  with_items: host_install_packages

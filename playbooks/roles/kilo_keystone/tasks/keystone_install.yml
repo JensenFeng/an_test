@@ -1,0 +1,29 @@
+---
+
+- name: Install apt package
+  apt:
+    pkg: "{{item}}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 6000
+  register: install_keystone
+  until: install_keystone|success
+  with_items: keystone.keystone_apt_packages
+  tags: keystone-apt-packages
+
+- name: Install requires pip packages
+  pip: 
+    name: "{{ item }}"
+    state: present
+  register: install_packages
+  until: install_packages|success
+  with_items: keystone.keystone_pip_packages
+
+- name: Initialize keystone configuration
+  template: src={{item.src}} dest={{item.dest}} owner=keystone mode=0640
+  with_items:
+    - { src: "keystone.conf.j2", dest: "/etc/keystone/keystone.conf"}
+  tags: keystone-config
+
+- name: sync db
+  shell: su -s /bin/sh -c "keystone-manage db_sync" keystone

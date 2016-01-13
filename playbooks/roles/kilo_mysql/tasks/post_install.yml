@@ -1,0 +1,30 @@
+---
+- name: Reconfigure MySQL settings file
+  template:
+    src: mysql_my.cnf.j2
+    dest: /etc/mysql/conf.d/my.cnf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart mysql
+
+- name: (Re)Create databases
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{item}}"
+    state: present
+  with_items: mysql_databases 
+  when: mysql_databases|length > 0
+
+- name: (Re)Create database users
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ item.name }}"
+    password: "{{item.pass | default('pass')}}"
+    priv: "{{item.priv | default('*.*:ALL,GRANT')}}"
+    state: present
+    host: "{{item.host | default('localhost')}}"
+  with_items: mysql_users 
+  when: mysql_users|length > 0

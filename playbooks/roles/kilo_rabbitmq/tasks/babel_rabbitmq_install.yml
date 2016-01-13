@@ -1,0 +1,50 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+#
+# Author:mhjlq1989@gmail.com
+
+- name: Install the RabbitMQ package
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items: rabbitmq_apt_packages
+  tags:
+    - rabbitmq-apt-packages
+
+- name: Check openstack user is existed
+  rabbitmq_user:
+    user: "{{rabbitmq_user}}"
+    state: present
+  register: user_existed
+
+- name: add openstack user
+  shell: rabbitmqctl change_password "{{rabbitmq_user}}" "{{rabbitmq_password}}"
+  when: user_existed|success
+  tags:
+    - rabbitmq-settings
+
+- name: permit openstack user
+  shell: rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+
+
+- name: copy enable rabbitmq_management file
+  copy:
+    src: enabled_plugins
+    dest: /etc/rabbitmq/enabled_plugins
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - babel-rabbitmq-enable-plugins
+
+- name: Do restart rabbitmq-server
+  service:
+    name: "rabbitmq-server"
+    enabled: "yes"
+    state: "restarted"

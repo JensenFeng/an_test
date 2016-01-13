@@ -1,0 +1,7 @@
+---
+- include: memcached_pre_install.yml
+- include: memcached_install.yml
+- include: memcached_config.yml
+
+- name: Flush handlers
+  meta: flush_handlers

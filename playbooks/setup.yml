@@ -2,16 +2,12 @@
 
 - hosts: all
   roles:
-    - role: prepare
-
-    - role: ntp_servers 
-      ntp_servers: [ deployhost ]
+#   - kilo_host_config
+#   - role: ntp_servers 
+#     ntp_servers: [ deployhost ]
 
 - hosts: all
   roles:
-    - mysql
-    - rabbitmq
-    - keystone_server
-    
-#   - babel_mysql
-#   - babel_keystone
+    - kilo_rabbitmq
+    - kilo_mysql
+    - kilo_keystone

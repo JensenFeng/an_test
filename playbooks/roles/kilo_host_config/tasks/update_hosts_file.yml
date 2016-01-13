@@ -1,0 +1,13 @@
+---
+
+- name: Remove 127.0.1.1 row
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^127.0.1.1"
+    state: absent
+
+- name: Add hostname
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ ansible_host_ip }} {{ ansible_host_name }}"
+    state: present

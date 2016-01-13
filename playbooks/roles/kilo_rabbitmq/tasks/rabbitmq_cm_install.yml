@@ -1,0 +1,36 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+#
+# Author:lijun
+
+- name: Create exchange for cloud monitor
+  shell: |
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPUT -d'{"vhost":"/","name":"cloud.exchange.monitor","type":"topic","durable":"true","auto_delete":"false","internal":"false","arguments":{}}'\
+    http://localhost:55672/api/exchanges/%2f/cloud.exchange.monitor
+  args:
+     executable: /bin/bash
+  ignore_errors: true
+  tags:
+    - babel-cloud-monitor-exchange
+
+- name: Create queue for cloud monitor
+  shell: |
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPUT -d'{"vhost":"/","name":"cloud.queue.monitor.delInstance","durable":"true","auto_delete":"false","arguments":{}}' http://localhost:55672/api/queues/%2F/cloud.queue.monitor.delInstance
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPUT -d'{"vhost":"/","name":"cloud.queue.monitor.modifyAlarm","durable":"true","auto_delete":"false","arguments":{}}' http://localhost:55672/api/queues/%2F/cloud.queue.monitor.modifyAlarm
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPUT -d'{"vhost":"/","name":"cloud.queue.monitor.updateInstanceScreenName","durable":"true","auto_delete":"false","arguments":{}}' http://localhost:55672/api/queues/%2F/cloud.queue.monitor.updateInstanceScreenName
+  args:
+     executable: /bin/bash
+  ignore_errors: true
+  tags:
+    - babel-cloud-monitor-queue
+
+- name: Bind exchange and queue for cloud monitor
+  shell: |
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPOST -d'{"vhost":"/","source":"cloud.exchange.monitor","destination_type":"q","destination":"cloud.queue.monitor.delInstance","routing_key":"delInstance","arguments":{}}' http://localhost:55672/api/bindings/%2F/e/cloud.exchange.monitor/q/cloud.queue.monitor.delInstance
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPOST -d'{"vhost":"/","source":"cloud.exchange.monitor","destination_type":"q","destination":"cloud.queue.monitor.modifyAlarm","routing_key":"modifyAlarm","arguments":{}}' http://localhost:55672/api/bindings/%2F/e/cloud.exchange.monitor/q/cloud.queue.monitor.modifyAlarm
+    curl -i -u {{ rabbitmq_user }}:{{ rabbitmq_password }} -H "content-type:application/json" -XPOST -d'{"vhost":"/","source":"cloud.exchange.monitor","destination_type":"q","destination":"cloud.queue.monitor.updateInstanceScreenName","routing_key":"updateInstanceScreenName","arguments":{}}' http://localhost:55672/api/bindings/%2F/e/cloud.exchange.monitor/q/cloud.queue.monitor.updateInstanceScreenName
+  args:
+     executable: /bin/bash
+  ignore_errors: true
+  tags:
+    - babel-cloud-monitor-bind-items

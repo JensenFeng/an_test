@@ -1,0 +1,9 @@
+---
+
+- include: babel_rabbitmq_install.yml
+
+# include: rabbitmq_pre_install.yml
+
+# include: rabbitmq_install.yml
+
+# include: rabbitmq_post_install.yml

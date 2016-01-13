@@ -1,0 +1,23 @@
+auto eth0
+iface eth0 inet manual
+  pre-up ip link add veth1 type veth peer name vport1
+  pre-up ip link add veth2 type veth peer name vport2
+  pre-up ip link add veth3 type veth peer name vport3
+  pre-up ip link set dev veth1 up
+  pre-up ip link set dev veth2 up
+  pre-up ip link set dev veth3 up
+  pre-up ip link set dev vport1 up
+  pre-up ip link set dev vport2 up
+  pre-up ip link set dev vport3 up
+  pre-up ip link set dev eth0 up
+  pre-up ip addr add 10.0.0.11/24 dev veth1
+  pre-up ip addr add 10.0.1.11/24 dev veth2
+  pre-up ip addr add 10.166.224.30/22 dev veth3
+  post-up route add default gw 10.166.224.1 veth3
+
+auto br0
+iface br0 inet manual
+  bridge_stp off
+  bridge_waitport 0
+  bridge_fd 0
+  bridge_ports eth0 vport1 vport2 vport3 

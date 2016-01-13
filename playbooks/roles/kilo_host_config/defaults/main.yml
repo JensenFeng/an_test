@@ -1,0 +1,23 @@
+---
+
+ansible_host_ip: 10.166.224.28
+ansible_host_name: "deployhost"
+
+install_ubuntu_key:
+    - ubuntu-cloud-keyring
+
+host_install_packages:
+    - python
+    - python-dev
+    - bridge-utils
+    - git
+    - curl
+    - ifenslave
+    - vim
+    - python-pip
+    - python-mysqldb
+    - vlan
+    - iptables
+    - cgroup-lite
+    - libvirt-bin
+    - python-libvirt
