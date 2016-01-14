@@ -1,0 +1,33 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+- name: Install keystone package
+  apt:
+    pkg: "{{item}}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: install_keystone
+  until: install_keystone|success
+  retries: 5
+  delay: 2
+  with_items: babel_keystone.keystone_apt_packages
+  tags: keystone-apt-packages
+
+- name: Initialize keystone configuration 
+  template: src={{item.src}} dest={{item.dest}} owner=keystone mode=0640
+  with_items:
+    - { src: "keystone.conf.j2", dest: "/etc/keystone/keystone.conf"}
+  tags: keystone-config
+
+- name: Do restart keystone
+  service:
+     name: "keystone"
+     state: "restarted"
+     pattern: "keystone"
+
+- name: Sync keystone db
+  shell: keystone-manage db_sync 
+  tags: keystone-config

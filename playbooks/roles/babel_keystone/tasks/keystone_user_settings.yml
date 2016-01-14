@@ -1,0 +1,85 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+- name: Create keystone tenant
+  keystone:
+    command: "ensure_tenant"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    tenant_name: "{{ item }}"
+  with_items:
+    - admin
+    - service
+    - demo
+  tags:
+    - keystone-user-settings
+  
+- name: Create keystone users
+  keystone:
+    command: "ensure_user"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    user_name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    tenant_name: "{{ item.tenant_name }}"
+    email: "{{ item.user }}@citycloud.com.cn"
+  with_items:
+    keystone_users
+  tags:
+    - keystone-user-settings
+
+- name: Create keystone roles
+  keystone:
+    command: "ensure_role"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    role_name: "{{item}}"
+  with_items:
+    - admin
+    - Member
+  tags:
+    - keystone-user-settings
+
+- name: Set role on user
+  keystone:
+    command: "ensure_user_role"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    user_name: "{{item.user}}"
+    tenant_name: "{{item.tenant_name}}"
+    role_name: "admin"
+  with_items:
+    keystone_users
+  tags:
+    - keystone-user-settings
+
+- name: Create services
+  keystone:
+    command: "ensure_service"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    service_name: "{{item.service_name}}"
+    service_type: "{{item.service_type}}"
+    description: "{{item.description}}"
+  with_items:
+    keystone_services
+  tags:
+    - keystone-user-settings
+
+- name: Create endpoints
+  keystone:
+    command: "ensure_endpoint"
+    token: "{{ babel_keystone.admin_token }}"
+    endpoint: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0"
+    region_name: "{{babel_keystone.region_name}}"
+    service_name: "{{item.service_name}}"
+    service_type: "{{item.service_type}}"
+    publicurl: "{{item.public_url}}"
+    adminurl: "{{item.admin_url}}"
+    internalurl: "{{item.internal_url}}"
+  with_items:
+    keystone_endpoints
+  tags:
+    - keystone-user-settings

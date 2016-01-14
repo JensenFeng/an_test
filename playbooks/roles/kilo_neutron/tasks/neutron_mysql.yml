@@ -1,0 +1,23 @@
+---
+
+- name: Create neutron databases
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - neutron
+
+- name: Crete database user
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ mysql_root_password }}"
+    name: "neutron"
+    password: "{{ neutron_mysql_pass }}"
+    priv: "neutron.*:ALL"
+    state: present
+    host: "{{ item }}"
+  with_items:
+    - 'localhost'
+    - '%'

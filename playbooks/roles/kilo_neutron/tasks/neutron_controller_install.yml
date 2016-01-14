@@ -1,0 +1,40 @@
+---
+
+- name: Install apt packags
+  apt:
+    pkg: "{{ item }}"
+#   state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: install_neutron
+  until: install_neutron|success
+  with_items: neutron_apt_packages
+
+- name: Configure neutron conf file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: neutron
+    mode: 0640
+  with_items:
+   - { src: "neutron.conf.j2", dest: "/etc/neutron/neutron.conf" }
+   - { src: "ml2_conf.ini.j2", dest: "/etc/neutron/plugins/ml2/ml2_conf.ini" }
+
+- name: sync db
+  command: "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head"
+  sudo: yes
+
+- name: Restart neutron
+  service: 
+    name: "{{ item }}"
+    state: "restarted"
+    pattern: "{{ item }}"
+  with_items:
+    - nova-api
+    - neutron-server
+
+- name: Ensure neutron.sqlite not exists
+  file:
+    path: "/var/lib/neutron/neutron.sqlite"
+    state: absent
+  sudo: yes

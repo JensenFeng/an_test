@@ -1,0 +1,35 @@
+# {{ ansible_managed }}
+
+{% set _api_threads = ansible_processor_vcpus|default(2) // 2 %}
+{% set api_threads = _api_threads if _api_threads > 0 else 1 %}
+
+[DEFAULT]
+verbose = {{ babel_glance.verbose }}
+debug = {{ babel_glance.debug }}
+use_syslog = False
+log_file = {{ babel_glance.log_dir }}{{ babel_glance.registry_settings.registry_log_file }}
+registry_bind_address = {{ babel_glance.registry_settings.registry_bind_address }}
+registry_bind_port = {{ babel_glance.registry_settings.registry_service_port }}
+http_keepalive = {{ babel_glance.http_keepalive }}
+backlog = 4096
+workers = {{ babel_glance.registry_settings.registry_workers | default(api_threads) }}
+api_limit_max = 1000
+limit_param_default = 25
+
+
+
+# ============ Database Options ===============================
+sql_connection = {{ babel_glance.mysql_conn }}
+sql_idle_timeout = 3600
+
+
+[keystone_authtoken]
+auth_host = {{ babel_glance.keystone_host }}
+auth_port = {{ babel_glance.keystone_admin_port }}
+auth_protocol = http
+admin_tenant_name = service
+admin_user = {{ babel_glance_admin_user }}
+admin_password = {{ babel_glance_admin_password }}
+
+[paste_deploy]
+flavor = {{ babel_glance.flavor }}

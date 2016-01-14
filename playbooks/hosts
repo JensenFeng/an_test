@@ -1,6 +1,7 @@
 [all:children]
 node
 db
+compute
 
 [node]
 node1
@@ -12,4 +13,6 @@ node1
 node1
 
 [keystone_server]
+node1
+[compute]
 node1

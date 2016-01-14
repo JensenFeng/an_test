@@ -13,8 +13,8 @@ rabbitmq_pip_packages:
    - python-memcached
    - pycrypto
 
-rabbitmq_user: openstack
-rabbitmq_password: openstack
+rabbitmq_user: "{{ rabbitmq_openstack_user }}"
+rabbitmq_password: "{{ rabbitmq_openstack_password }}"
 ##
 rabbitmq_users_definitions:
   - name: openstack

@@ -1,0 +1,20 @@
+---
+
+glance_apt_packages:
+  - glance
+  - python-glanceclient
+
+glance_mysql_pass: "glance_pass"
+glance_mysql_address: "{{ mysql_address|default('127.0.0.1') }}"
+glance_default_store: file
+glance_filesystem_store_datadir: /var/lib/glance/images/
+glance_api_bind_address: "0.0.0.0"
+glance_api_bind_port: 9292
+glance_registry_host: "127.0.0.1"
+glance_registry_port: 9191
+glance_api_service_proto: http
+glance_rabbit_user: " {{ rabbitmq_openstack_user|default('openstack') }}"
+glance_rabbit_password: "{{ rabbitmq_openstack_password|default('openstack') }}"
+glance_keystone_ip: "127.0.0.1"
+glance_keystone_pass: "glance_pass"
+glance_images_path: "/var/lib/glance/images/tmp/images"

@@ -1,0 +1,9 @@
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+export OS_USERNAME={{ babel_keystone_admin_user| default('admin') }}
+export OS_PASSWORD={{ babel_keystone_admin_password| default('admin_pass') }}
+export OS_TENANT_NAME=admin
+export OS_AUTH_URL=http://{{ babel_keystone.public_ip }}:{{ babel_keystone.public_port }}/v2.0
+export OS_NO_CACHE=1

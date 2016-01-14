@@ -9,5 +9,10 @@
 - hosts: all
   roles:
 #   - kilo_rabbitmq
-    - kilo_mysql
-    - kilo_keystone
+#   - kilo_mysql
+#   - kilo_keystone
+#   - kilo_glance
+
+- hosts: compute
+  roles:
+    - kilo_nova

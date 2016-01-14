@@ -1,0 +1,36 @@
+---
+- name: Install apt packages
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    cache_valid_time: 600
+    update_cache: yes
+  with_items: nova_compute_packages
+
+- name: Configure nova conf file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: nova
+    mode: 0644
+  with_items:
+    - { src: 'nova_compute.conf.j2', dest: '/etc/nova/nova.conf' }
+
+- name: Restart nova compute service
+  service: 
+    name: "{{ item }}"
+    state: "restarted"
+    pattern: "{{ item }}"
+  with_items: nova_compute_names
+
+- name: check hardware accleration
+  shell: "egrep -c '(vmx|svm)' /proc/cpuinfo"
+  register: nova_ha_result
+  ignore_errors: true
+
+- name: change hardware accleration
+  lineinfile:
+    dest: /etc/nova/nova-compute.conf
+    regexp: "^virt_type"
+    line: "virt_type = qemu"
+  when: nova_ha_result.stdout == 0

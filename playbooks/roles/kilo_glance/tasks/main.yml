@@ -1,0 +1,5 @@
+---
+
+- include: glance_mysql.yml
+- include: glance_install.yml
+- include: glance_post_install.yml

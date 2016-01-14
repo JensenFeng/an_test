@@ -1,0 +1,16 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+- name: Create admin source
+  template: src=.novarc dest={{ babel_keystone.conf_auth_file }} owner=root mode=0640
+  tags:
+   - keystone-check
+
+- name: Keystone list
+  shell: keystone --os-username {{ babel_keystone_admin_user| default('admin') }} --os-password {{ babel_keystone_admin_password| default('admin_pass') }} --os-tenant-name admin --os-auth-url http://{{ babel_keystone_service_ip }}:{{ config_keystone.public_port }}/v2.0 tenant-list
+  register: keystone_result
+  failed_when: keystone_result.rc != 0
+  tags:
+   - keystone-check

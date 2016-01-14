@@ -1,0 +1,40 @@
+---
+
+- name: Install apt packags
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: install_glance
+  until: install_glance|success
+  with_items: glance_apt_packages
+
+- name: Configure glance-*.conf file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: glance
+    mode: 0640
+  with_items:
+   - { src: "glance-api.conf.j2", dest: "/etc/glance/glance-api.conf" }
+   - { src: "glance-registry.conf.j2", dest: "/etc/glance/glance-registry.conf" }
+
+- name: sync db
+  command: "glance-manage db_sync"
+  sudo: yes
+
+- name: Restart glance
+  service: 
+    name: "{{ item }}"
+    state: "restarted"
+    pattern: "{{ item }}"
+  with_items:
+    - glance-api
+    - glance-registry
+
+- name: Ensure glance.sqlite not exists
+  file:
+    path: "/var/lib/glance/glance.sqlite"
+    state: absent
+  sudo: yes

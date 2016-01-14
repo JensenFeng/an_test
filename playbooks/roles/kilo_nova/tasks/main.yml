@@ -1,0 +1,6 @@
+---
+
+- include: nova_mysql.yml
+- include: nova_controller_install.yml
+- include: nova_compute_install.yml
+- include: nova_post_install.yml

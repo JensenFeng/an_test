@@ -5,11 +5,24 @@
 
 # All the global var here
 ntp_servers: "10.166.224.28"
+keystone_ip: 127.0.0.1
 mysql_root_password: 'CHANGEME'
 #mysql_address: "10.166.224.30"
-mysql_address: 10.166.224.30
+mysql_address: 127.0.0.1
 rabbitmq_port: 5672
 rabbitmq_servers: 127.0.0.1
+rabbitmq_openstack_user: 'openstack'
+rabbitmq_openstack_password: 'openstack'
+glance_mysql_pass: "glance"
+keystone_conf_auth_file: /root/.novarc
+keystone_auth_ip: "{{mysql_address}}"
+nova_mysql_pass: "nova"
+neutron_mysql_pass: "neutron"
+neutron_keystone_password: "neutron_pass"
+METADATA_SECRET: "metadata_secret"
+
+
+
 babel_mysql_root_password: 'CHANGEME'
 
 babel_mysql_keystone_user: keystone

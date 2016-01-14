@@ -1,0 +1,68 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+babel_keystone:
+
+  keystone_apt_packages:
+    - python-pip
+    - keystone
+
+  mysql_keystone_user: "{{ babel_mysql_keystone_user| default('keystone')}}"
+  mysql_keystone_password: "{{ babel_mysql_keystone_password| default('keystone_pass')}}"
+  mysql_ip: "{{ babel_mysql_service_ip| default('127.0.0.1')}}"
+  mysql_port: "{{ config_mysql.bind_port| default('3306')}}"
+
+  memcache_server: "{{ babel_memcached_service_ip|default('127.0.0.1') }}"
+  memcache_port: "{{ config_memcached.bind_port|default('11211') }}"
+
+  conf_auth_file: "{{ babel_auth_file|default('/root/.novarc') }}"
+
+  admin_token: "{{ babel_keystone_admin_token }}"
+  bind_host: "{{ config_keystone.bind_host|default('0.0.0.0') }}"
+  public_port: "{{ config_keystone.public_port|default('5000') }}"
+  admin_port: "{{ config_keystone.admin_port|default('35357') }}"
+  internal_port: "{{ config_keystone.internal_port|default('5000') }}"
+  log_file: "{{ config_keystone.log_file|default('keystone.log') }}"
+  log_dir: "{{ config_keystone.log_dir|default('/data/log/keystone/') }}"
+  public_ip: "{{ babel_keystone_service_ip|default('127.0.0.1') }}"
+  admin_ip: "{{ babel_keystone_service_ip|default('127.0.0.1') }}"
+  internal_ip: "{{ babel_keystone_service_ip|default('127.0.0.1') }}"
+  region_name: "{{ config_keystone.region_name|default('RegionOne') }}"
+
+  glance_bind_port: "{{ config_glance.bind_port|default('9292') }}"
+
+  nova_osapi_compute_listen_port: "{{ config_nova.osapi_compute_listen_port|default('8774') }}"
+
+  neutron_bind_port: "{{ config_neutron.bind_port|default('9696') }}"
+
+  cinder_osapi_volume_listen_port: "{{ config_cinder.osapi_volume_listen_port|default('8776') }}"
+
+## System info
+keystone_system_user_name: keystone
+keystone_system_group_name: keystone
+keystone_system_shell: /bin/false
+keystone_system_comment: keystone system user
+keystone_system_user_home: "/data/{{ keystone_system_user_name }}"
+
+keystone_users:
+   - { user: "{{ babel_keystone_admin_user| default('admin') }}" , password: "{{ babel_keystone_admin_password| default('admin_pass') }}", tenant_name: "admin" }
+   - { user: "{{ babel_glance_admin_user| default('glance') }}", password: "{{ babel_glance_admin_password| default('glance_pass') }}", tenant_name: "service" }
+   - { user: "{{ babel_nova_admin_user| default('nova') }}", password: "{{ babel_nova_admin_password| default('nova_pass') }}", tenant_name: "service" }
+   - { user: "{{ babel_neutron_admin_user| default('neutron') }}", password: "{{ babel_neutron_admin_password| default('neutron_pass') }}", tenant_name: "service" }
+   - { user: "{{ babel_cinder_admin_user| default('cinder') }}", password: "{{ babel_cinder_admin_password| default('cinder_pass') }}", tenant_name: "service" }
+
+keystone_services:
+   - { service_name: "keystone" , service_type: "identity", description: "CityCloud iaas Identify Service" }
+   - { service_name: "glance" , service_type: "image", description: "CityCloud iaas Image Service" }
+   - { service_name: "nova" , service_type: "compute", description: "CityCloud iaas Compute Service" }
+   - { service_name: "neutron" , service_type: "network", description: "CityCloud iaas Network Service" }
+   - { service_name: "cinder" , service_type: "volume", description: "CityCloud iaas Volume Service" }
+
+keystone_endpoints:
+   - { service_name: "keystone" , service_type: "identity" , public_url: "http://{{ babel_keystone.public_ip }}:{{ babel_keystone.public_port }}/v2.0", internal_url: "http://{{ babel_keystone.internal_ip }}:{{ babel_keystone.internal_port }}/v2.0", admin_url: "http://{{ babel_keystone.admin_ip }}:{{ babel_keystone.admin_port }}/v2.0", region_name: "{{ babel_keystone.region_name }}" }
+   - { service_name: "glance" , service_type: "image" , public_url: "http://{{ babel_glance_service_ip }}:{{ babel_keystone.glance_bind_port }}/v1", internal_url: "http://{{ babel_glance_service_ip }}:{{ babel_keystone.glance_bind_port }}/v1", admin_url: "http://{{ babel_glance_service_ip }}:{{ babel_keystone.glance_bind_port }}/v1", region_name: "{{ babel_keystone.region_name }}" }
+   - { service_name: "nova" , service_type: "compute" , public_url: "http://{{ babel_nova_service_ip }}:{{ babel_keystone.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", internal_url: "http://{{ babel_nova_service_ip }}:{{ babel_keystone.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", admin_url: "http://{{ babel_nova_service_ip }}:{{ babel_keystone.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", region_name: "{{ babel_keystone.region_name }}" }
+   - { service_name: "neutron" , service_type: "network" , public_url: "http://{{ babel_neutron_service_ip }}:{{ babel_keystone.neutron_bind_port }}", internal_url: "http://{{ babel_neutron_service_ip }}:{{ babel_keystone.neutron_bind_port }}", admin_url: "http://{{ babel_neutron_service_ip }}:{{ babel_keystone.neutron_bind_port }}", region_name: "{{ babel_keystone.region_name }}" }
+   - { service_name: "cinder" , service_type: "volume" , public_url: "http://{{ babel_cinder_service_ip }}:{{ babel_keystone.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", internal_url: "http://{{ babel_cinder_service_ip }}:{{ babel_keystone.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", admin_url: "http://{{ babel_cinder_service_ip }}:{{ babel_keystone.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", region_name: "{{ babel_keystone.region_name }}" }

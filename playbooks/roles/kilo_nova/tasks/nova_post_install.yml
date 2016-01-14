@@ -1,0 +1,11 @@
+
+- name: List images
+# shell: "{{ item }}"
+# with_items:
+  shell: |
+      source {{ keystone_conf_auth_file }}
+      nova service-list
+  args:
+    executable: /bin/bash
+  register: nova_result
+  failed_when: nova_result.rc != 0

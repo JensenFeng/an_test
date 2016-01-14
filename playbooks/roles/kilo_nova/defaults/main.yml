@@ -1,0 +1,31 @@
+---
+
+nova_apt_packages:
+  - nova-api 
+  - nova-cert 
+  - nova-conductor 
+  - nova-consoleauth 
+  - nova-novncproxy 
+  - nova-scheduler 
+  - python-novaclient
+
+nova_compute_packages:
+  - nova-compute 
+  - sysfsutils
+
+nova_service_names:
+  - nova-api
+  - nova-cert
+  - nova-consoleauth
+  - nova-scheduler
+  - nova-conductor
+  - nova-novncproxy
+
+nova_compute_names:
+  - nova-compute
+
+nova_mysql_pass: "{{nova_mysql_pass}}"
+nova_mysql_ip: "{{mysql_address}}"
+my_ip: 10.0.0.11
+compute_manage_if_ip: 10.0.0.11
+vnc_ip: 127.0.0.1

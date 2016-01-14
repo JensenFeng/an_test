@@ -1,0 +1,23 @@
+---
+
+- name: Create glance databases
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - glance
+
+- name: Crete database user
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ mysql_root_password }}"
+    name: "glance"
+    password: "{{ glance_mysql_pass }}"
+    priv: "glance.*:ALL"
+    state: present
+    host: "{{ item }}"
+  with_items:
+    - 'localhost'
+    - '%'

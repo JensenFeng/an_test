@@ -1,0 +1,10 @@
+---
+# Copyright 2015, CityCloud CN, Inc.
+# 
+# Author:mhjlq1989@gmail.com
+
+- name: Restart keystone
+  service:
+     name: "keystone"
+     state: "restarted"
+     pattern: "keystone"

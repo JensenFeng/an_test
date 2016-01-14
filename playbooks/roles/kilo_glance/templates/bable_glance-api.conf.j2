@@ -1,0 +1,83 @@
+
+
+[DEFAULT]
+verbose = true
+use_syslog = False
+default_store = {{ glance_default_store }}
+log_file = "/var/log/glance/glance.log"
+bind_host = {{ glance_api_bind_address }}
+bind_port = {{ glance_api_bind_port }}
+backlog = 4096
+
+registry_host = {{ glance_registry_host|default('127.0.0.1') }}
+registry_port = {{ glance_registry_port }}
+registry_client_protocol = {{ glance_api_service_proto }}
+
+# ============ Notification System Options =====================
+notifier_strategy = {{ glance_notifier_strategy }}
+rabbit_host = {{ glance_rabbit_host }}
+rabbit_port = {{ glance_rabbit_port }}
+rabbit_userid = {{ rabbitmq_user }}
+rabbit_password = {{rabbitmq_password }}
+rabbit_virtual_host = /
+rabbit_use_ssl = false
+rabbit_notification_exchange = glance
+rabbit_notification_topic = glance_notifications
+rabbit_durable_queues = False
+
+# ============ Filesystem Store Options ============================
+filesystem_store_datadir = {{ babel_glance.system_user_home }}/images/
+
+[database]
+connection = mysql://glance:{{ glance_mysql_pass }}@{{ glance_mysql_address }}/glance?charset=utf8
+
+# ============ Chunk NOS Store Options =============================
+# chunk_store_sos = nos
+# chunk_store_sos_url = 192.168.128.5:8184
+# chunk_store_sos_host = nos.netease.com
+# chunk_store_sos_user = deb1ef2922284433bedbb11664b883e8
+# chunk_store_sos_key = 13d0772108964c628920208b820f3e20
+# chunk_store_sos_bucket = nova-images
+# chunk_store_sos_bucket_location = HZ
+# chunk_store_sos_object_deduplicate = False
+# chunk_store_sos_use_store_class = True
+# chunk_store_sos_is_whitelist = false
+# chunk_store_cache_enable = true
+# chunk_store_cache = memcached
+# chunkcache_memcached_servers = 127.0.0.1:11211
+
+# ============ Delayed Delete Options =============================
+delayed_delete = False
+scrub_time = 43200
+scrubber_datadir = {{ babel_glance.system_user_home }}/scrubber
+
+# =============== Image Cache Options =============================
+image_cache_dir = {{ babel_glance.system_user_home }}/image-cache
+
+# =============== Image Cache Options =============================
+image_cache_driver = mysql
+image_cache_max_size = 50000000000
+cache_sql_connection = {{ babel_glance.mysql_conn }}
+cache_sql_max_retries = 10
+cache_sql_retry_interval = 1
+
+# =============== Image Chunk Cache Options =============================
+# chunk_store_cache_auto_prune = false
+# chunk_store_cache_prune_strategy = fifo
+# chunk_store_cache_max_size = 1024
+# chunk_store_cache_prune_ignore_seconds = 10
+
+
+[keystone_authtoken]
+auth_host = {{ babel_glance.keystone_host }}
+auth_port = {{ babel_glance.keystone_admin_port }}
+auth_protocol = http
+admin_tenant_name = service
+admin_user = {{ babel_glance_admin_user }}
+admin_password = {{ babel_glance_admin_password }}
+
+[paste_deploy]
+flavor = {{ babel_glance.flavor }}
+
+
+
