@@ -24,8 +24,10 @@ nova_service_names:
 nova_compute_names:
   - nova-compute
 
-nova_mysql_pass: "{{nova_mysql_pass}}"
-nova_mysql_ip: "{{mysql_address}}"
+nova_mysql_pass: "{{mysql.nova_password}}"
+nova_mysql_ip: "{{mysql.bind_name}}"
 my_ip: 10.0.0.11
 compute_manage_if_ip: 10.0.0.11
 vnc_ip: 127.0.0.1
+nova_keystone_password: "{{ keystone.nova_password }}"
+mysql_address: 127.0.0.1

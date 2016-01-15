@@ -2,9 +2,9 @@
 
 # Basic settings
 mysql_port: 3306
-mysql_bind_address: "0.0.0.0"
+mysql_bind_address: "{{ mysql.bind_address }}"
 mysql_default_root_password: ''
-mysql_root_password: 'CHANGEME'
+mysql_root_password: "{{ mysql.root_password }}"
 mysql_language: '/usr/share/mysql/'
 
 # Fine Tuning
@@ -43,12 +43,12 @@ mysql_packages:
    - mariadb-server
    - python-mysqldb
 # List of users to be created
-#mysql_users:  []
-mysql_users:  
-    - name: keystone 
-      pass: keystone_pass
-      priv: keystone.*:ALL
-      host: 'localhost'
+mysql_users:  []
+#mysql_users:  
+#   - name: keystone 
+#     pass: keystone_pass
+#     priv: keystone.*:ALL
+#     host: 'localhost'
 #   - name: nova 
 #   - name: glance
 #   - name: cinder

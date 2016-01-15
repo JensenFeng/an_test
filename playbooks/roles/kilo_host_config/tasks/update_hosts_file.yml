@@ -9,5 +9,9 @@
 - name: Add hostname
   lineinfile:
     dest: /etc/hosts
-    line: "{{ ansible_host_ip }} {{ ansible_host_name }}"
+    line: "{{ item.ip }}  {{ item.name }} "
+    regexp: "^{{ item.ip }}"
     state: present
+  with_items:
+    - { ip: "{{deploy_host_ip}}", name: "{{deploy_host_name}}" }
+    - { ip: "{{ ansible_host_ip }}", name: "{{ ansible_host_name }}" }

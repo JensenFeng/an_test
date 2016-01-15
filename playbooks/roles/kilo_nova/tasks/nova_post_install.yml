@@ -3,7 +3,7 @@
 # shell: "{{ item }}"
 # with_items:
   shell: |
-      source {{ keystone_conf_auth_file }}
+      source {{ keystone.conf_auth_file }}
       nova service-list
   args:
     executable: /bin/bash

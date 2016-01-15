@@ -1,16 +1,16 @@
 [DEFAULT]
-admin_token = {{ keystone.admin_token }}
-bind_port = {{ keystone.bind_port }}
-public_port = {{ keystone.public_port }}
-admin_port = {{ keystone.admin_port }}
+admin_token = {{ keystone_conf.admin_token }}
+bind_port = {{ keystone_conf.bind_port }}
+public_port = {{ keystone_conf.public_port }}
+admin_port = {{ keystone_conf.admin_port }}
 debug = True
 verbose = True
-log_file = {{ keystone.log_file }}
-log_dir = {{ keystone.log_dir }}
+log_file = {{ keystone_conf.log_file }}
+log_dir = {{ keystone_conf.log_dir }}
 
 [sql]
 # The SQLAlchemy connection string used to connect to the database
-connection = mysql://{{ keystone.mysql_keystone_user }}:{{ keystone.mysql_keystone_password }}@{{ keystone.mysql_ip }}:{{ keystone.mysql_port }}/keystone
+connection = mysql://{{ mysql.keystone_user }}:{{ mysql.keystone_password }}@{{keystone.mysql_ip}}:{{ keystone.mysql_port }}/keystone
 
 # the timeout before idle sql connections are reaped
 idle_timeout = 200
@@ -49,7 +49,7 @@ provider = keystone.token.providers.uuid.Provider
 driver = keystone.token.persistence.backends.memcache.Token
 
 [memcache]
-servers = {{ keystone.memcache_server }}:{{ keystone.memcache_port }}
+servers = {{ keystone_conf.memcache_server }}:{{ keystone_conf.memcache_port }}
 [cache]
 # Global cache functionality toggle.
 # enabled = False

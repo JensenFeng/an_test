@@ -15,8 +15,8 @@
 - name: Install apt packages
   apt:
     pkg: "{{ item }}"
+    cache_valid_time: 600
     update_cache: yes
-    valid_cache_time: 600
   with_items: neutron_network_packages
 
 - name: Configure neutron conf file
@@ -29,8 +29,8 @@
      - { src: "neutron.conf.j2", dest: "/etc/neutron/neutron.conf" }
      - { src: "ml2_conf.ini.j2", dest: "/etc/neutron/plugins/ml2/ml2_conf.ini" }
      - { src: "l3_agent.ini.j2", dest: "/etc/neutron/l3_agent.ini" }
-     - { src: "dhcp_agent.ini.j2", dest: "/etc/neutron/dhcp_agent.ini" }
      - { src: "metadata_agent.ini.j2", dest: "/etc/neutron/metadata_agent.ini" }
+     - { src: "dhcp_agent.ini.j2", dest: "/etc/neutron/dhcp_agent.ini" }
 
 - name: Ensure OVS service restarted
   service:
@@ -44,7 +44,7 @@
   shell: |
     ovs-vsctl add-br br-ex
     ovs-vsctl add-port br-ex {{external_bridge_ifname}}
-
+  ignore_errors: true
 
 - name: neutron service restarted
   service:

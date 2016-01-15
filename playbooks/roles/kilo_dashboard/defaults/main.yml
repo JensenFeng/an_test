@@ -1,0 +1,4 @@
+---
+dashboard_packages: openstack-dashboard
+
+openstack_dashboard: "127.0.0.1"

@@ -8,9 +8,9 @@
     state: present
   with_items: 
     - { key: "net.ipv4.conf.all.rp_filter", value: "=0" }
-    - { key: "net.ipv4.conf.default.rp_filter", value: "=0" }
-    - { key: "net.bridge.bridge-nf-call-iptables", value: "=1" }
-    - { key: "net.bridge.bridge-nf-call-ip6tables", value: "=1" }
+#   - { key: "net.ipv4.conf.default.rp_filter", value: "=0" }
+#   - { key: "net.bridge.bridge-nf-call-iptables", value: "=1" }
+#   - { key: "net.bridge.bridge-nf-call-ip6tables", value: "=1" }
 - name: Enable the changes
   shell: "sysctl -p"
 
@@ -18,7 +18,7 @@
   apt:
     pkg: "{{ item }}"
     update_cache: yes
-    valid_cache_time: 600
+    cache_valid_time: 600
   with_items: neutron_compute_packages
 
 - name: Configure neutron conf file

@@ -1,7 +1,7 @@
 ---
 
-ansible_host_ip: 10.166.224.28
-ansible_host_name: "deployhost"
+deploy_host_ip: 10.166.224.28
+deploy_host_name: "deployhost"
 
 install_ubuntu_key:
     - ubuntu-cloud-keyring

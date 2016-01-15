@@ -5,7 +5,7 @@
    - keystone-check
 
 - name: Keystone list
-  shell: keystone --os-username {{ keystone_admin_user| default('admin') }} --os-password {{ keystone_admin_password| default('admin_pass') }} --os-tenant-name admin --os-auth-url http://{{ keystone_service_ip }}:{{ config_keystone.public_port }}/v2.0 tenant-list
+  shell: keystone --os-username {{ keystone_admin_user| default('admin') }} --os-password {{ keystone_admin_token| default('admin_pass') }} --os-tenant-name admin --os-auth-url http://{{ keystone_service_ip }}:{{ config_keystone.public_port }}/v2.0 tenant-list
   register: keystone_result
   failed_when: keystone_result.rc != 0
   tags:

@@ -1,0 +1,21 @@
+---
+- name: Install apt packages
+  apt:
+    pkg: "{{ item }}"
+    cache_valid_time: 600
+    update_cache: yes
+  with_items: dashboard_packages
+
+- name: Configure dashboard
+  template:
+    src: "local_settings.py.j2"
+    dest: "/etc/openstack-dashboard/local_settings.py"
+    owner: root
+    mode: 0640
+
+- name: Load  apache2
+  service: 
+    name: "{{ item }}"
+    state: "reloaded"
+    pattern: "{{ item }}"
+  with_items: apache2

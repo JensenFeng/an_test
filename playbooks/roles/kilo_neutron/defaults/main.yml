@@ -1,7 +1,7 @@
 ---
 
-neutron_mysql_password: "{{ neutron_mysql_pass}}"
-neutron_keystone_password: "{{ neutron_keystone_pass|default('neutron_pass') }}"
+neutron_mysql_password: "{{ mysql.neutron_password }}"
+neutron_keystone_password: "{{ keystone.neutron_password|default('neutron_pass') }}"
 neutron_apt_packages:
   - neutron-server 
   - neutron-plugin-ml2 
@@ -17,4 +17,6 @@ neutron_compute_packages:
   - neutron-plugin-ml2 
   - neutron-plugin-openvswitch-agent
 
-external_bridge_ifname: veth3
+external_bridge_ifname: veth2
+instance_tunnels_ifip_address: 192.168.1.100
+neutron_mysql_pass: "{{ mysql.neutron_password }}"
