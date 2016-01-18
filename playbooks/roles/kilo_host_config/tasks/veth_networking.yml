@@ -18,6 +18,7 @@
 - name: Ensure our interfaces.d configuration files are loaded automatically
   lineinfile:
     dest: /etc/network/interfaces
+    regexp: "^source /etc/network"
     line: "source /etc/network/interfaces.d/*.cfg"
   tags:
     - networking-interfaces-load
