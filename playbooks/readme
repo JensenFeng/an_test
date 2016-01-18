@@ -1,0 +1,4 @@
+configure:
+#  1.网络三张虚拟网卡，配完需重启
+#  2.neutron网络还不完全
+need reboot after configuring the networking
