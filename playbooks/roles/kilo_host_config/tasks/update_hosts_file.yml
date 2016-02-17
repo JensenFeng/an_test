@@ -13,5 +13,8 @@
     regexp: "^{{ item.ip }}"
     state: present
   with_items:
-    - { ip: "{{deploy_host_ip}}", name: "{{deploy_host_name}}" }
-    - { ip: "{{ ansible_host_ip }}", name: "{{ ansible_host_name }}" }
+    # { ip: "{{deploy_host_ip}}", name: "{{deploy_host_name}}" }
+    # { ip: "{{ ansible_host_ip }}", name: "{{ ansible_host_name }}" }
+    - { ip: "{{ controller.host }}", name: "{{ controller.hostname }}" }
+    - { ip: "{{ network.host }}", name: "{{ network.hostname }}" }
+    - { ip: "{{ compute.host }}", name: "{{ compute.hostname }}" }

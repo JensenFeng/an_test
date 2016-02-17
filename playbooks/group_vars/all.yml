@@ -1,17 +1,20 @@
 ---
-# Copyright 2015, CityCloud CN, Inc.
-#
-# Author:mhjlq1989@gmail.com
-
-# All the global var here
-ansible_host_ip: 10.0.0.11
-#ansible_host_ip: 127.0.0.1
-ansible_host_name: node1
-ntp_servers: [ localhost ]
+controller:
+    host: 10.0.0.11
+    hostname: "controller"
+network:
+    host: 10.0.0.21
+    hostname: "network"
+compute:
+    host: 10.0.0.31
+    hostname: "compute1"
+#ansible_host_ip: 10.0.0.11
+#ansible_host_name: node1
+ntp_servers: [ "{{ controller.hostname }}" ]
 mysql:
    root_password: '123456'
-   bind_address: "{{ ansible_host_ip }}"
-   bind_name: "{{ ansible_host_ip }}"
+   bind_address: "{{ controller.host }}"
+   bind_name: "{{ controller.host }}"
    port: 3306
    keystone_user: "keystone"
    keystone_password: "keystone_pass"

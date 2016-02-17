@@ -1,11 +1,11 @@
 ---
-# name: set sources
-# copy: 
-#      src: sources_ubuntu.list 
-#      dest: /etc/apt/sources.list
-#      mode: "0644"
-#      owner: "root"
-#      group: "root"
+- name: set sources
+  copy: 
+       src: sources_ubuntu.list 
+       dest: /etc/apt/sources.list
+       mode: "0644"
+       owner: "root"
+       group: "root"
 
 - name: update
   apt: 
@@ -30,7 +30,7 @@
   with_items:
     - "apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5EDB1B62EC4926EA"
     - "apt-get update"
-    - "apt-get dist-upgrade"
+    - "apt-get -y dist-upgrade"
 
 - name: Install ubuntu-key
   apt:

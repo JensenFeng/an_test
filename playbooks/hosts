@@ -1,18 +1,15 @@
 [all:children]
-node
-db
+controller
+compute
+network
+
+[controller]
+controller
+
+[compute]
 compute
 
-[node]
-node1
 
-[db]
-node1
+[network]
+network
 
-[rabbitmq]
-node1
-
-[keystone_server]
-node1
-[compute]
-node1

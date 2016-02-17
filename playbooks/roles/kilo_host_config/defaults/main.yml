@@ -2,6 +2,15 @@
 
 deploy_host_ip: 10.166.224.28
 deploy_host_name: "deployhost"
+controller:
+    host: 10.0.0.11
+    hostname: "controller"
+network: 
+    host: 10.0.0.21
+    hostname: "network"
+compute:
+    host: 10.0.0.31
+    hostname: "compute1"
 
 install_ubuntu_key:
     - ubuntu-cloud-keyring
