@@ -426,7 +426,7 @@ filesystem_store_datadir = {{glance_filesystem_store_datadir}}
 # priority, then the one with the most free space available is selected.
 # If same store is specified multiple times then BadStoreConfiguration
 # exception will be raised.
-#filesystem_store_datadirs = /var/lib/glance/images/:1
+#filesystem_store_datadirs = {{glance_filesystem_store_datadir}}:1
 
 # A path to a JSON file that contains metadata describing the storage
 # system.  When show_multiple_locations is True the information in this

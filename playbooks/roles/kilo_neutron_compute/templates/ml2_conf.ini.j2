@@ -16,8 +16,8 @@ enable_tunneling = True
 enable_acl = True
 permit_arp_broadcast = True
 permit_dhcp_broadcast = True
-#local_ip = {{ instance_tunnels_ifip_address }} 
-#bridge_mappings = external:br-ex
+local_ip = {{ instance_tunnels_ifip_address }} 
+bridge_mappings = external:br-ex
 [securitygroup]
 enable_security_group = True
 enable_ipset = True

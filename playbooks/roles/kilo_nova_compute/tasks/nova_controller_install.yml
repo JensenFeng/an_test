@@ -27,3 +27,4 @@
     state: restarted
     pattern: "{{ item }}"
   with_items: nova_service_names
+

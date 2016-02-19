@@ -18,5 +18,5 @@ neutron_compute_packages:
   - neutron-plugin-openvswitch-agent
 
 external_bridge_ifname: "{{ neutron_external_bridge_ifname }}"
-instance_tunnels_ifip_address: 10.0.1.21
+instance_tunnels_ifip_address: 10.0.1.31
 neutron_mysql_pass: "{{ mysql.neutron_password }}"

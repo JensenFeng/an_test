@@ -2,5 +2,5 @@
 
 - include: neutron_mysql.yml
 - include: neutron_controller_install.yml
-- include: neutron_network_install.yml
-- include: neutron_compute_install.yml
+# include: neutron_network_install.yml
+# include: neutron_compute_install.yml

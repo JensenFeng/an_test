@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+
+[DEFAULT]
+verbose = true
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+external_network_bridge =
+router_delete_namespaces = True
+
+allow_automatic_l3agent_failover = True
+enable_metadata_proxy = True
+
+# L3 Agent HA
+
+
+
+# L3 configuration options
+
+# L3 Agent interfaces
+handle_internal_only_routers = True

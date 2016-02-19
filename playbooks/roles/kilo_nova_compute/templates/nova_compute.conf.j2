@@ -32,27 +32,28 @@ allow_resize_to_same_host=True
 image_service=nova.image.glance.GlanceImageService
          
 # NETWORK
-#network_manager=nova.network.manager.FlatDHCPManager
-#force_dhcp_release=True
-#dhcpbridge_flagfile=/etc/nova/nova.conf
-#firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
 network_api_class = nova.network.neutronv2.api.API
 security_group_api = neutron
-linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
-firewall_driver = nova.virt.firewall.NoopFirewallDriver
+linuxnet_interface_driver = nova.network.linux_net.LenuxOVSInterfaceDriver
+network_manager=nova.network.manager.FlatDHCPManager
+force_dhcp_release=True
+dhcpbridge_flagfile=/etc/nova/nova.conf
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+
 
 # Change my_ip to match each host
-my_ip={{ my_ip }}
+my_ip={{ compute_manage_if_ip }}
 #public_interface=eth0
 #vlan_interface=eth0
 #flat_network_bridge=br100
 #flat_interface=eth0
           
 # NOVNC CONSOLE
-#novncproxy_base_url=http://10.166.224.30:6080/vnc_auto.html
+vnc_enabled=True
+novncproxy_base_url=http://{{vnc_ip}}:6080/vnc_auto.html
 # Change vncserver_proxyclient_address and vncserver_listen to match each compute host
-vncserver_proxyclient_address={{ my_ip }}
-vncserver_listen={{ my_ip }}
+vncserver_proxyclient_address={{ compute_manage_if_ip }}
+vncserver_listen= 0.0.0.0
            
 # AUTHENTICATION
 auth_strategy=keystone
@@ -64,7 +65,7 @@ project_domain_id = default
 user_domain_id = default 
 project_name = service
 username = nova
-password = {{nova_keystone_password}}
+password = {{nova_mysql_pass}}
 #signing_dirname = /tmp/keystone-signing-nova
             
 # GLANCE
@@ -74,7 +75,7 @@ host = {{ glance_host }}
              
 # DATABASE
 [database]
-connection=mysql://nova:{{nova_mysql_pass}}@{{nova_mysql_ip}}/nova
+#connection=mysql://nova:{{nova_mysql_pass}}@{{nova_mysql_ip}}/nova
 
 # LIBVIRT
 [libvirt]
@@ -83,11 +84,10 @@ virt_type=qemu
 rabbit_host = {{ rabbitmq.server_ip }}
 rabbit_userid = {{ rabbitmq.openstack_user }} 
 rabbit_password = {{ rabbitmq.openstack_password }}
-
 [neutron]
 service_metadata_proxy = True 
 metadata_proxy_shared_secret = {{METADATA_SECRET}}
-url = http://{{keystone.auth_ip}}:9696
+url = http://{{keystone.service_ip}}:9696
 auth_strategy = keystone
 admin_auth_url = http://{{keystone.auth_ip}}:35357/v2.0 
 admin_tenant_name = service

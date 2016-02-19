@@ -10,10 +10,16 @@
 #   - kilo_rabbitmq
 #   - kilo_mysql
 #   - kilo_keystone
-    - kilo_glance
+#   - kilo_glance
+    - kilo_nova
+    - kilo_neutron
+    - kilo_dashboard
 
-# hosts: Compute
-# roles:
-#   - kilo_nova
-#   - kilo_neutron
-#   - kilo_dashboard
+- hosts: Compute
+  roles:
+    - kilo_nova_compute
+    - kilo_neutron_compute
+
+- hosts: Network
+  roles:
+    - kilo_neutron_network

@@ -1,14 +1,5 @@
 ---
 
-nova_apt_packages:
-  - nova-api 
-  - nova-cert 
-  - nova-conductor 
-  - nova-consoleauth 
-  - nova-novncproxy 
-  - nova-scheduler 
-  - python-novaclient
-
 nova_compute_packages:
   - nova-compute 
   - sysfsutils
@@ -23,12 +14,14 @@ nova_service_names:
 
 nova_compute_names:
   - nova-compute
+  - sysfsutils
 
 nova_mysql_pass: "{{mysql.nova_password}}"
 nova_mysql_ip: "{{mysql.bind_name}}"
 my_ip: "{{ Controller.host }}"
-compute_manage_if_ip: 10.0.0.11
-vnc_ip: 127.0.0.1
+## dynamic change ip
+compute_manage_if_ip: "{{ Compute.host }}"
+vnc_ip: "{{ Controller.hostname }}"
 nova_keystone_password: "{{ keystone.nova_password }}"
-mysql_address: 127.0.0.1
+mysql_address: "{{ nova_mysql_ip }}"
 glance_host: "{{ nova_mysql_ip}}"

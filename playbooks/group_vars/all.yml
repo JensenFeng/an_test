@@ -59,7 +59,7 @@ keystone:
 METADATA_SECRET: "metadata_secret"
 nova_metadata_ip: "{{ ansible_host_name }}"
 nova_metadata_listen_port: "8775"
-
+neutron_external_bridge_ifname: veth4
 ###delete blow line
 babel_mysql_root_password: 'CHANGEME'
 
