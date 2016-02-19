@@ -247,6 +247,7 @@ backend = sqlalchemy
 #db_max_retries = 20
 
 [keystone_authtoken]
+#identity_uri = http://{{glance_keystone_ip}}:5000
 auth_uri = http://{{glance_keystone_ip}}:5000
 auth_url = http://{{glance_keystone_ip}}:35357
 auth_plugin = password
@@ -255,6 +256,9 @@ user_domain_id = default
 project_name = service
 username = glance
 password = {{glance_keystone_pass}}
+#dmin_tenant_name = service
+#dmin_user = glance
+#dmin_password = {{glance_keystone_pass}}
 [paste_deploy]
 # Name of the paste configuration file that defines the available pipelines
 #config_file = glance-registry-paste.ini

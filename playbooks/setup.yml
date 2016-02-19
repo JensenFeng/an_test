@@ -1,18 +1,18 @@
 ---
 
-- hosts: all
-  roles:
-    - kilo_host_config
-    - ntp_servers 
-
-# hosts: controller
+# hosts: all
 # roles:
+#   - kilo_host_config
+#   - ntp_servers 
+
+- hosts: Controller
+  roles:
 #   - kilo_rabbitmq
 #   - kilo_mysql
 #   - kilo_keystone
-#   - kilo_glance
+    - kilo_glance
 
-# hosts: compute
+# hosts: Compute
 # roles:
 #   - kilo_nova
 #   - kilo_neutron

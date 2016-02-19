@@ -1,15 +1,15 @@
 [all:children]
+Controller
+Compute
+Network
+
+[Controller]
 controller
-compute
-network
 
-[controller]
-controller
-
-[compute]
-compute
+[Compute]
+compute1
 
 
-[network]
+[Network]
 network
 

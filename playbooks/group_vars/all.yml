@@ -1,23 +1,29 @@
 ---
-controller:
-    host: 10.0.0.11
-    hostname: "controller"
-network:
-    host: 10.0.0.21
-    hostname: "network"
-compute:
-    host: 10.0.0.31
-    hostname: "compute1"
-#ansible_host_ip: 10.0.0.11
-#ansible_host_name: node1
-ntp_servers: [ "{{ controller.hostname }}" ]
+
+Controller:
+  host: 10.0.0.11 
+  hostname: "controller"
+
+Network:
+  host: 10.0.0.21
+  hostname: "network"
+
+Compute:
+  host: 10.0.0.31
+  hostname: "compute1"
+
+ansible_host_ip: "{{ Controller.host }}"
+ansible_host_name: "{{ Controller.hostname }}"
+ntp_servers: [ "{{ Controller.hostname }}" ]
+keystone_db_user: "keystone"
+keystone_db_pass: "keystone_pass"
 mysql:
    root_password: '123456'
-   bind_address: "{{ controller.host }}"
-   bind_name: "{{ controller.host }}"
+   bind_address: "{{ Controller.host }}"
+   bind_name: "{{ Controller.hostname }}"
    port: 3306
-   keystone_user: "keystone"
-   keystone_password: "keystone_pass"
+   keystone_user: "{{ keystone_db_user }}"
+   keystone_password: "{{ keystone_db_pass }}"
    glance_user: "glance"
    glance_password: "glance_pass"
    nova_user: "nova"
@@ -32,8 +38,12 @@ rabbitmq:
 keystone:
    mysql_ip: "{{ ansible_host_name }}"
    auth_ip: "{{ ansible_host_name }}"
-   service_ip: 127.0.0.1
-   admin_password: "admin_pass"
+   serverName: "{{ ansible_host_name }}"
+   service_ip: "{{ Controller.hostname }}"
+   db_user: "{{ keystone_db_user }}"
+   db_password: "{{ keystone_db_pass }}"
+   admin_user: "admin"
+   admin_token: "admin_pass"
    mysql_port: "{{ mysql.port }}"
    conf_auth_file: /root/.novarc
    keystone_user: "keystone"
@@ -50,7 +60,7 @@ METADATA_SECRET: "metadata_secret"
 nova_metadata_ip: "{{ ansible_host_name }}"
 nova_metadata_listen_port: "8775"
 
-
+###delete blow line
 babel_mysql_root_password: 'CHANGEME'
 
 babel_mysql_keystone_user: keystone
@@ -81,11 +91,11 @@ babel_auth_file: /root/.novarc
 
 babel_nfs_server: "10.10.82.121"
 
-babel_public_network_name: "public_admin"
-babel_public_network_cidr: "10.10.245.0/24"
-babel_public_network_gateway_ip: "10.10.245.253"
+babel_public_Network_name: "public_admin"
+babel_public_Network_cidr: "10.10.245.0/24"
+babel_public_Network_gateway_ip: "10.10.245.253"
 babel_public_service_cidr: "192.168.2.0/24"
-babel_private_network_cidr: "192.168.138.0/24"
+babel_private_Network_cidr: "192.168.138.0/24"
 babel_private_tunnel_cidr: "192.168.1.0/24"
 babel_vpn_client_ip_pool: "192.168.114.0/23"
 babel_vpn_domain_suffix: ".test.vpn.cloud.netease.com"

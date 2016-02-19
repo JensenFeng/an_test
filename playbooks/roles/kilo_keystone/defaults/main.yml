@@ -7,23 +7,59 @@ keystone_system_shell: /bin/false
 keystone_system_user_home: "/var/lib/{{ keystone_system_user_name }}"
 keystone_service_region: "RegionOne"
 keystone_conf_auth_file: "{{ keystone.conf_auth_file}}"
-keystone_service_ip: 127.0.0.1
 mysql_root_password: "{{ mysql.root_password }}"
 keystone_mysql_address: "{{ mysql_address }}"
 keystone_mysql_pass: "{{ mysql.keystone_password }}"
 config_keystone:
    public_port: 5000
-## empty
-glance_service_ip: 127.0.0.1 
-nova_service_ip: 127.0.0.1
-neutron_service_ip: 127.0.0.1
-cinder_service_ip: 127.0.0.1
+## 
+keystone_service_ip: "{{ keystone.service_ip }}"
+glance_service_ip: "{{ keystone.service_ip }}" 
+nova_service_ip: "{{ keystone.service_ip }}" 
+neutron_service_ip: "{{ keystone.service_ip }}"
+cinder_service_ip: "{{ keystone.service_ip }}"
 ##
-keystone_admin_user: "admin"
-keystone_admin_token: "admin_pass"
-keystone_auth_admin_token: "{{ keystone_mysql_pass }}"
-keystone_service_adminurl: "127.0.0.1"
+keystone_admin_user: "{{ keystone.admin_user }}"
+keystone_admin_token: "{{ keystone.admin_token }}"
+keystone_service_adminurl: "{{ keystone_service_ip }}"
 keystone_service_adminport: "35357"
+
+keystone_conf:
+   log_dir: "/var/log/keystone/"
+   log_file: "keystone.log"
+   public_ip: "{{keystone_service_ip}}"
+   public_port: 5000
+   internal_ip: "{{keystone_service_ip}}"
+   internal_port: 5000
+   admin_ip: "{{keystone_service_ip}}"
+   admin_port: 35357
+   admin_token: "{{ keystone_admin_token }}"
+   bind_port: localhost
+   glance_bind_port: 9292    
+   nova_osapi_compute_listen_port: 8774 
+   neutron_bind_port: 9696
+   cinder_osapi_volume_listen_port: 8776
+   memcache_server: localhost
+   memcache_port: 11211
+keystone_users:
+   - { user: "admin",   tenant_name: "admin", password: "{{keystone.admin_token}}" }
+   - { user: "glance",  tenant_name: "service", password: "{{keystone.glance_password}}" }
+   - { user: "nova",    tenant_name: "service", password: "{{keystone.nova_password}}" }
+   - { user: "neutron", tenant_name: "service", password: "{{keystone.neutron_password}}" }
+   - { user: "cinder",  tenant_name: "service", password: "{{keystone.cinder_password}}" }
+keystone_services:
+   - { service_name: "keystone", service_type: "identity", description: "Identity service" }
+   - { service_name: "glance",   service_type: "image", description: "Image Service" }
+   - { service_name: "nova",     service_type: "compute", description: "Compute Service" }
+   - { service_name: "neutron",  service_type: "network", description: "Network Service" }
+   - { service_name: "cinder",   service_type: "volume", description: "Volume Service" }
+keystone_endpoints:
+   - { service_name: "keystone", service_type: "identity", public_url: "http://{{ keystone_conf.public_ip }}:{{ keystone_conf.public_port }}/v2.0", internal_url: "http://{{ keystone_conf.internal_ip }}:{{ keystone_conf.internal_port }}/v2.0", admin_url: "http://{{ keystone_conf.admin_ip }}:{{ keystone_conf.admin_port }}/v2.0" }
+   - { service_name: "glance", service_type: "image", public_url: "http://{{ glance_service_ip }}:{{ keystone_conf.glance_bind_port }}/v1", internal_url: "http://{{ glance_service_ip }}:{{ keystone_conf.glance_bind_port }}/v1", admin_url: "http://{{ glance_service_ip}}:{{ keystone_conf.glance_bind_port}}/v1" }
+   - { service_name: "nova", service_type: "compute", public_url: "http://{{ nova_service_ip }}:{{ keystone_conf.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", internal_url: "http://{{ nova_service_ip }}:{{ keystone_conf.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", admin_url: "http://{{ nova_service_ip}}:{{ keystone_conf.nova_osapi_compute_listen_port}}/v2/$(tenant_id)s" }
+   - { service_name: "neutron", service_type: "network", public_url: "http://{{ neutron_service_ip }}:{{ keystone_conf.neutron_bind_port }}", internal_url: "http://{{ neutron_service_ip }}:{{ keystone_conf.neutron_bind_port }}", admin_url: "http://{{ neutron_service_ip}}:{{ keystone_conf.neutron_bind_port}}" }
+   - { service_name: "cinder", service_type: "volume", public_url: "http://{{ cinder_service_ip }}:{{ keystone_conf.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", internal_url: "http://{{ cinder_service_ip }}:{{ keystone_conf.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", admin_url: "http://{{ cinder_service_ip}}:{{ keystone_conf.cinder_osapi_volume_listen_port}}/v1/$(tenant_id)s" }
+
 
 keystone_apt_packages:
      - keystone
@@ -59,39 +95,3 @@ keystone_pip_packages:
 #      python-memcached
 #      python-openstackclient
 #      repoze.lru
-keystone_conf:
-   log_dir: "/var/log/keystone/"
-   log_file: "keystone.log"
-   public_ip: 127.0.0.1
-   public_port: 5000
-   internal_ip: 127.0.0.1
-   internal_port: 5000
-   admin_ip: 127.0.0.1
-   admin_port: 35357
-   admin_token: "{{ keystone_auth_admin_token }}"
-   bind_port: 127.0.0.1
-   glance_bind_port: 9292    
-   nova_osapi_compute_listen_port: 8774 
-   neutron_bind_port: 9696
-   cinder_osapi_volume_listen_port: 8776
-   memcache_server: localhost
-   memcache_port: 11211
-keystone_users:
-   - { user: "admin",   tenant_name: "admin", password: "{{keystone.admin_password}}" }
-   - { user: "glance",  tenant_name: "service", password: "{{keystone.glance_password}}" }
-   - { user: "nova",    tenant_name: "service", password: "{{keystone.nova_password}}" }
-   - { user: "neutron", tenant_name: "service", password: "{{keystone.neutron_password}}" }
-   - { user: "cinder",  tenant_name: "service", password: "{{keystone.cinder_password}}" }
-keystone_services:
-   - { service_name: "keystone", service_type: "identity", description: "Identity service" }
-   - { service_name: "glance",   service_type: "image", description: "Image Service" }
-   - { service_name: "nova",     service_type: "compute", description: "Compute Service" }
-   - { service_name: "neutron",  service_type: "network", description: "Network Service" }
-   - { service_name: "cinder",   service_type: "volume", description: "Volume Service" }
-keystone_endpoints:
-   - { service_name: "keystone", service_type: "identity", public_url: "http://{{ keystone_conf.public_ip }}:{{ keystone_conf.public_port }}/v2.0", internal_url: "http://{{ keystone_conf.internal_ip }}:{{ keystone_conf.internal_port }}/v2.0", admin_url: "http://{{ keystone_conf.admin_ip }}:{{ keystone_conf.admin_port }}/v2.0" }
-   - { service_name: "glance", service_type: "image", public_url: "http://{{ glance_service_ip }}:{{ keystone_conf.glance_bind_port }}/v1", internal_url: "http://{{ glance_service_ip }}:{{ keystone_conf.glance_bind_port }}/v1", admin_url: "http://{{ glance_service_ip}}:{{ keystone_conf.glance_bind_port}}/v1" }
-   - { service_name: "nova", service_type: "compute", public_url: "http://{{ nova_service_ip }}:{{ keystone_conf.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", internal_url: "http://{{ nova_service_ip }}:{{ keystone_conf.nova_osapi_compute_listen_port }}/v2/$(tenant_id)s", admin_url: "http://{{ nova_service_ip}}:{{ keystone_conf.nova_osapi_compute_listen_port}}/v2/$(tenant_id)s" }
-   - { service_name: "neutron", service_type: "network", public_url: "http://{{ neutron_service_ip }}:{{ keystone_conf.neutron_bind_port }}", internal_url: "http://{{ neutron_service_ip }}:{{ keystone_conf.neutron_bind_port }}", admin_url: "http://{{ neutron_service_ip}}:{{ keystone_conf.neutron_bind_port}}" }
-   - { service_name: "cinder", service_type: "volume", public_url: "http://{{ cinder_service_ip }}:{{ keystone_conf.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", internal_url: "http://{{ cinder_service_ip }}:{{ keystone_conf.cinder_osapi_volume_listen_port }}/v1/$(tenant_id)s", admin_url: "http://{{ cinder_service_ip}}:{{ keystone_conf.cinder_osapi_volume_listen_port}}/v1/$(tenant_id)s" }
-

@@ -30,13 +30,16 @@
     pattern: mysqld
     enabled: yes
 
-# name: update mysql root password for all accounts
-# mysql_user:
-#   name: root
-#   host: "127.0.0.1"
-#   password: "{{ mysql_root_password }}"
-#   priv: "*.*:ALL,GRANT"
-#   state: present
+- name: update mysql root password for all accounts
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_default_root_password }}"
+    name: root
+    host: "localhost"
+    password: "{{ mysql_root_password }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+  ignore_errors: true
 
 - name: copy .my.cnf file with root password credentials
   template:
@@ -48,8 +51,8 @@
 
 - name: reconfigure the root account for remote use
   mysql_user:
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
+#   login_user: root
+#   login_password: "{{ mysql_default_root_password }}"
     name: root
     host: "{{ item }}"
     password: "{{ mysql_root_password }}"

@@ -5,7 +5,7 @@
      regexp: "^export OS_IMAGE_API_VERSION"
      line: "export OS_IMAGE_API_VERSION=2"
      state: present
-  with_items: keystone_conf_auth_file
+  with_items: keystone.conf_auth_file
 
 - name: Create image directory
   file:
@@ -29,8 +29,8 @@
 # with_items:
 #   - glance image-create --name "cirros-0.3.4-x86_64" --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility public
   shell: |
-      source {{ keystone_conf_auth_file }}
-      glance image-create --name "cirros-0.3.4-x86_64" --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2    --container-format  bare  
+      source {{ keystone.conf_auth_file }}
+      glance image-create  --name cirros-0.3.4-x86_64 --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare  
   args:
     executable: /bin/bash
 
@@ -38,7 +38,7 @@
 # shell: "{{ item }}"
 # with_items:
   shell: |
-      source {{ keystone_conf_auth_file }}
+      source {{ keystone.conf_auth_file }}
       glance image-list
   args:
     executable: /bin/bash

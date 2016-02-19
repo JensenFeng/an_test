@@ -2,7 +2,7 @@
 - name: Ensure Apache ServerName - edit apache2 cnf
   lineinfile:
      dest: "/etc/apache2/apache2.conf"
-     line: "ServerName {{ inventory_hostname }}"
+     line: ServerName "{{ keystone.serverName }}"
 
 - name: Ensure apache2 directory enabled
   file:
@@ -28,7 +28,7 @@
 # shell: "ln -s /etc/apache2/sites-available/wsgi-keystone.conf /etc/apache2/sites-enabled"
   file:
     src: "/etc/apache2/sites-available/wsgi-keystone.conf"
-    dest: "/etc/apache2/sites-enabled"
+    dest: "/etc/apache2/sites-enabled/wsgi-keystone.conf"
     state: link
   ignore_errors: true
 - name: Create directory for WSGI
