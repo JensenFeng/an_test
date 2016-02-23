@@ -23,18 +23,18 @@
   tags:
     - networking-interfaces-load
 
-- name: Shut down the network interfaces
-  command: "ifdown {{ item }}"
-  when: veth_interfaces | changed
-  with_items:
-    - br0
-  tags:
-    - networking-interfaces-stop
+# name: Shut down the network interfaces
+# command: "ifdown {{ item }}"
+# when: veth_interfaces | changed
+# with_items:
+#   - br0
+# tags:
+#   - networking-interfaces-stop
 
-- name: Start the network interfaces
-  command: "ifup {{ item }}"
-  when: veth_interfaces | changed
-  with_items:
-    - br0
-  tags:
-    - networking-interfaces-start
+# name: Start the network interfaces
+# command: "ifup {{ item }}"
+# when: veth_interfaces | changed
+# with_items:
+#   - br0
+# tags:
+#   - networking-interfaces-start

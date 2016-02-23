@@ -31,7 +31,7 @@ mysql:
    neutron_user: "neutron"
    neutron_password:  "neutron_pass"
 rabbitmq:
-   server_ip: 127.0.0.1
+   server_ip: "{{ Controller.hostname }}"
    port: 5672
    openstack_user: "openstack"
    openstack_password: "openstack"

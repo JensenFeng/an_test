@@ -1,4 +1,10 @@
 ---
+# name: Create admin source
+# template: 
+#   src: dot_novarc
+#   dest: "{{ keystone_conf_auth_file }}"
+#   owner: root
+#   mode: 0640
 
 # Create an service tenant
 - name: Ensure service tenant
@@ -13,9 +19,9 @@
     - admin
     - service
     - demo
-  tags:
-    - keystone-api-setup
-    - keystone-setup
+# tags:
+#   - keystone-api-setup
+#   - keystone-setup
 
 # Create an admin user
 - name: Ensure Admin user

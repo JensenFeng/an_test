@@ -1,7 +1,7 @@
 ---
 
-# hosts: all
-# roles:
+- hosts: all
+  roles:
 #   - kilo_host_config
 #   - ntp_servers 
 
@@ -12,14 +12,14 @@
 #   - kilo_keystone
 #   - kilo_glance
     - kilo_nova
-    - kilo_neutron
-    - kilo_dashboard
+#   - kilo_neutron
+#   - kilo_dashboard
 
 - hosts: Compute
   roles:
     - kilo_nova_compute
-    - kilo_neutron_compute
+#   - kilo_neutron_compute
 
 - hosts: Network
   roles:
-    - kilo_neutron_network
+#   - kilo_neutron_network

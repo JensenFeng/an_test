@@ -8,7 +8,7 @@
     state: present
   with_items: 
     - { key: "net.ipv4.ip_forward", value: "=1" }
-    - { key: "et.ipv4.conf.all.rp_filter", value: "=0" }
+    - { key: "net.ipv4.conf.all.rp_filter", value: "=0" }
     - { key: "net.ipv4.conf.default.rp_filter", value: "=0" }
 
 - name: Enable the changes

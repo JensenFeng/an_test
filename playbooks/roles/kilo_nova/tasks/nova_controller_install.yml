@@ -15,7 +15,7 @@
     mode: 0644
   with_items:
     - { src: 'nova.conf.j2', dest: '/etc/nova/nova.conf' }
-#   - { src: 'api-paste.ini.j2', dest: '/etc/nova/api-paste.ini' }
+ #  - { src: 'api-paste.ini.j2', dest: '/etc/nova/api-paste.ini' }
 
 - name: sync nova db
   shell: nova-manage db sync

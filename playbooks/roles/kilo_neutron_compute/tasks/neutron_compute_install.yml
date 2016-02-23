@@ -8,7 +8,7 @@
     state: present
   with_items: 
     - { key: "net.ipv4.conf.all.rp_filter", value: "=0" }
-#   - { key: "net.ipv4.conf.default.rp_filter", value: "=0" }
+    - { key: "net.ipv4.conf.default.rp_filter", value: "=0" }
 #   - { key: "net.bridge.bridge-nf-call-iptables", value: "=1" }
 #   - { key: "net.bridge.bridge-nf-call-ip6tables", value: "=1" }
 - name: Enable the changes
@@ -30,9 +30,6 @@
   with_items:
      - { src: "neutron.conf.j2", dest: "/etc/neutron/neutron.conf" }
      - { src: "ml2_conf.ini.j2", dest: "/etc/neutron/plugins/ml2/ml2_conf.ini" }
-#    - { src: "l3_agent.ini.j2", dest: "/etc/neutron/l3_agent.ini" }
-#    - { src: "dhcp_agent.ini.j2", dest: "/etc/neutron/dhcp_agent.ini" }
-#    - { src: "metadata_agent.ini.j2", dest: "/etc/neutron/metadata_agent.ini" }
 
 - name: Ensure OVS service restarted
   service:
@@ -49,4 +46,5 @@
     state: "restarted"
     pattern: "{{item}}"
   with_items:
+    - nova-compute
     - neutron-plugin-openvswitch-agent

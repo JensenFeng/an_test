@@ -7,5 +7,10 @@
   
 - name: copy the ntp.conf template file
   template: src=ntp.conf.j2 dest=/etc/ntp.conf
-  notify:
-    - restart ntp
+
+- name: Ensure ntp restart
+  service: name=ntp state=restarted enabled=yes
+
+- name: sync time
+  command: ntpq -p
+

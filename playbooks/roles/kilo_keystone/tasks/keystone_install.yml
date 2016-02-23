@@ -1,4 +1,16 @@
 ---
+- name: Ensure keystone.override file existed
+  file:
+    path: /etc/init/keystone.override
+    state: touch
+
+- name: Ensure keystone service for not autostarting
+  lineinfile:
+    dest: "{{ item }}"
+    regexp: "^manual"
+    line: "manual"
+    state: present
+  with_items:  /etc/init/keystone.override
 
 - name: Install apt package
   apt:

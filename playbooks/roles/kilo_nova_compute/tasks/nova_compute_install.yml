@@ -33,4 +33,4 @@
     dest: /etc/nova/nova-compute.conf
     regexp: "^virt_type"
     line: "virt_type = qemu"
-  when: nova_ha_result.stdout == 0
+# when: nova_ha_result.stdout == 0

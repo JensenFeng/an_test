@@ -4,10 +4,12 @@ Compute
 Network
 
 [Controller]
-controller
+c-node1
 
 [Compute]
-compute1
+com-node
+
 
 [Network]
-network
+net-node
+

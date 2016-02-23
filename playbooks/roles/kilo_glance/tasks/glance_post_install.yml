@@ -24,15 +24,15 @@
     url:  http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
     dest: "{{glance_images_path}}"
 
-- name: Create an image
+# name: Create an image
 # shell: "{{ item }}"
 # with_items:
 #   - glance image-create --name "cirros-0.3.4-x86_64" --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility public
-  shell: |
-      source {{ keystone.conf_auth_file }}
-      glance image-create  --name cirros-0.3.4-x86_64 --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility public 
-  args:
-    executable: /bin/bash
+# shell: |
+#     source {{ keystone.conf_auth_file }}
+#     glance image-create  --name cirros-0.3.4-x86_64 --file {{ glance_images_path }}/cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility public 
+# args:
+#   executable: /bin/bash
 
 - name: List images
 # shell: "{{ item }}"
